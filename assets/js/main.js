@@ -2,13 +2,14 @@
    Pin Africa — Archive & portfolio · main.js
    No dependencies. Every feature degrades gracefully without JavaScript.
 
-   1. Header state on scroll (teal-20 rule)
-   2. Mobile menu (full-screen dialog, focus trap, Escape)
-   3. Scroll spy (active anchor underlined in red)
+   1. Header state on scroll (the top frame folds away)
+   2. Drop-downs (desktop) & mobile menu card (focus trap, Escape)
+   3. Scroll spy (current group marked with a red dot)
    4. Scroll reveal (fade + 16px, staggered via --i)
    5. Photo strip (pause / play button, pause when off-screen)
    6. YouTube facade (youtube-nocookie player on click, one video at a time)
    7. Mobile storytelling reel (prev / next, counter, progress, pointer tilt)
+   8. About — falling value pills (Matter.js physics, loaded on demand)
    ========================================================================== */
 (function () {
   'use strict';
@@ -16,22 +17,22 @@
   // Tells the inline <head> script that main.js loaded (keeps reveal enabled)
   window.__pinReady = true;
 
+  // URL of this file, used to find assets/vendor/matter.min.js
+  var SCRIPT_URL = (document.currentScript && document.currentScript.src) || '';
+
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   var each = function (list, fn) { Array.prototype.forEach.call(list, fn); };
 
 
   /* 1. HEADER ------------------------------------------------------------- */
+  // The white frame at the top folds away once the page scrolls.
   var header = document.querySelector('.site-header');
   function updateHeader() {
     if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
   }
 
 
-  /* 2. MOBILE MENU -------------------------------------------------------- */
-  var menu = document.getElementById('mobile-menu');
-  var toggle = document.querySelector('.menu-toggle');
-  var lastFocus = null;
-
+  /* 2. DROP-DOWNS (desktop) & MOBILE MENU --------------------------------- */
   function focusables(root) {
     return Array.prototype.filter.call(
       root.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),
@@ -39,18 +40,79 @@
     );
   }
 
-  // Everything outside the menu becomes inert while it is open
+  // Drop-downs: open on hover (mouse), on click / Enter / Space, close with
+  // Escape, on focus leaving, on outside click or after following a link.
+  var dropdownItems = document.querySelectorAll('[data-dropdown]');
+
+  function setDropdown(item, open) {
+    var btn = item.querySelector('.nav__trigger');
+    var panel = item.querySelector('.dropdown');
+    if (open === (btn.getAttribute('aria-expanded') === 'true')) return;
+    btn.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+    panel.classList.toggle('is-open', open);
+  }
+  function closeDropdowns(except) {
+    each(dropdownItems, function (it) { if (it !== except) setDropdown(it, false); });
+  }
+
+  each(dropdownItems, function (item) {
+    var btn = item.querySelector('.nav__trigger');
+    var timer;
+    item._hover = false;
+    btn.addEventListener('click', function () {
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+      if (isOpen && item._hover) return;            // opened by hover: a click keeps it open
+      closeDropdowns(item);
+      setDropdown(item, !isOpen);
+    });
+    item.addEventListener('pointerenter', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      item._hover = true;
+      clearTimeout(timer);
+      closeDropdowns(item);
+      setDropdown(item, true);
+    });
+    item.addEventListener('pointerleave', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      item._hover = false;
+      timer = setTimeout(function () { setDropdown(item, false); }, 200);
+    });
+    item.addEventListener('focusout', function (e) {
+      if (!item.contains(e.relatedTarget)) setDropdown(item, false);
+    });
+    item.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+        setDropdown(item, false);
+        btn.focus();
+      }
+    });
+    item.querySelector('.dropdown').addEventListener('click', function (e) {
+      if (e.target.closest('a')) { item._hover = false; setDropdown(item, false); }
+    });
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('[data-dropdown]')) closeDropdowns();
+  });
+
+  // Mobile menu: card under the tab, dimmed page behind, focus kept inside
+  var menu = document.getElementById('mobile-menu');
+  var burger = document.querySelector('.burger');
+  var backdrop = document.querySelector('.menu-backdrop');
+  var notch = document.querySelector('.notch');
+  var lastFocus = null;
+
   function setBackgroundInert(on) {
     each(document.body.children, function (el) {
-      if (el !== menu && el.tagName !== 'SCRIPT') el.inert = on;
+      if (el !== menu && el !== header && el !== backdrop && el.tagName !== 'SCRIPT') el.inert = on;
     });
+    if (notch) each(notch.children, function (el) { if (el !== burger) el.inert = on; });
   }
 
   function onMenuKey(e) {
     if (e.key === 'Escape') { closeMenu(true); return; }
     if (e.key !== 'Tab') return;
-    var items = focusables(menu);
-    if (!items.length) return;
+    var items = [burger].concat(focusables(menu));
     var first = items[0], last = items[items.length - 1];
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
@@ -58,74 +120,78 @@
 
   function openMenu() {
     lastFocus = document.activeElement;
+    menu.style.setProperty('--menu-top', Math.round(notch.getBoundingClientRect().bottom + 10) + 'px');
     menu.hidden = false;
+    backdrop.hidden = false;
     menu.classList.add('is-open');
-    toggle.setAttribute('aria-expanded', 'true');
+    burger.setAttribute('aria-expanded', 'true');
     document.body.classList.add('menu-open');
     setBackgroundInert(true);
-    menu.querySelector('.menu-close').focus();
+    var first = focusables(menu)[0];
+    if (first) first.focus();
     document.addEventListener('keydown', onMenuKey);
   }
 
   function closeMenu(returnFocus) {
-    if (menu.hidden) return;
+    if (!menu || menu.hidden) return;
     menu.hidden = true;
+    backdrop.hidden = true;
     menu.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('menu-open');
     setBackgroundInert(false);
     document.removeEventListener('keydown', onMenuKey);
-    if (returnFocus && lastFocus) lastFocus.focus();
+    if (returnFocus) burger.focus();
   }
 
-  if (menu && toggle) {
-    toggle.addEventListener('click', openMenu);
-    menu.querySelector('.menu-close').addEventListener('click', function () { closeMenu(true); });
+  if (menu && burger) {
+    burger.addEventListener('click', function () {
+      if (menu.hidden) openMenu(); else closeMenu(true);
+    });
+    backdrop.addEventListener('click', function () { closeMenu(false); });
     // Following an anchor closes the menu; the browser then scrolls to the target
     menu.addEventListener('click', function (e) {
       if (e.target.closest('a[href^="#"]')) closeMenu(false);
     });
-    window.matchMedia('(min-width: 1200px)').addEventListener('change', function (mq) {
+    window.matchMedia('(min-width: 1100px)').addEventListener('change', function (mq) {
       if (mq.matches) closeMenu(false);
     });
   }
 
 
   /* 3. SCROLL SPY --------------------------------------------------------- */
-  // section id → nav anchor it activates
+  // section id → menu group (About / Selected Work / Contact)
   var spyMap = {
-    about: '#about',
-    work: '#work',
-    campaign: '#work',
-    video: '#video',
-    mobile: '#mobile',
-    interactive: '#interactive',
-    articles: '#articles',
-    contact: '#contact'
+    about: 'about', 'who-we-were': 'about', mission: 'about', values: 'about',
+    work: 'work', campaign: 'work', video: 'work', mobile: 'work', interactive: 'work', articles: 'work',
+    contact: 'contact'
   };
-  var spyLinks = document.querySelectorAll('.main-nav a, .mobile-menu__nav a');
+  var groupEls = document.querySelectorAll('.site-header [data-group], .menu-card [data-group]');
+  var sectionLinks = document.querySelectorAll('.dd-link, .dd-tile, .mm-sub a');
   var spySections = Object.keys(spyMap)
     .map(function (id) { return document.getElementById(id); })
     .filter(Boolean);
-  var currentSpy = null;
+  var currentSpy;
 
   function updateSpy() {
     var line = window.innerHeight * 0.4;
     var active = null;
     spySections.forEach(function (sec) {
       var r = sec.getBoundingClientRect();
-      if (r.top <= line && r.bottom > line) active = spyMap[sec.id];
+      if (r.top <= line && r.bottom > line) active = sec.id;
     });
     // The contact block sits at the very bottom: activate it once reached
     var contact = document.getElementById('contact');
     if (contact && contact.getBoundingClientRect().top < window.innerHeight * 0.75 &&
         window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
-      active = '#contact';
+      active = 'contact';
     }
     if (active === currentSpy) return;
     currentSpy = active;
-    each(spyLinks, function (a) {
-      if (a.getAttribute('href') === active) a.setAttribute('aria-current', 'true');
+    var group = active ? spyMap[active] : null;
+    each(groupEls, function (el) { el.classList.toggle('is-active', el.getAttribute('data-group') === group); });
+    each(sectionLinks, function (a) {
+      if (active && a.getAttribute('href') === '#' + active) a.setAttribute('aria-current', 'true');
       else a.removeAttribute('aria-current');
     });
   }
@@ -316,5 +382,206 @@
         ['--rx', '--ry', '--gx', '--gy'].forEach(function (v) { frame.style.removeProperty(v); });
       });
     });
+  }
+
+
+  /* 8. ABOUT — FALLING VALUE PILLS --------------------------------------- */
+  // The five <li> pills are the real list. On screens that allow motion,
+  // coloured copies are added (aria-hidden) and every pill becomes a physics
+  // body: they fall and pile up when the section comes into view.
+  //   mouse: hover pushes pills, drag to throw, double-click duplicates a pill
+  //   touch: tap a pill to make it jump (page scrolling stays normal)
+  var pile = document.querySelector('[data-pile]');
+  if (pile && !reduceMotion.matches && 'IntersectionObserver' in window) {
+    var PILL_COLOURS = ['pill--teal', 'pill--red', 'pill--ink', 'pill--mist', 'pill--blush', 'pill--line'];
+    var MAX_PILLS = 40;
+
+    var loadMatter = function (done) {
+      if (window.Matter) { done(); return; }
+      var s = document.createElement('script');
+      s.src = SCRIPT_URL ? new URL('../vendor/matter.min.js', SCRIPT_URL).href : 'assets/vendor/matter.min.js';
+      s.onload = done;
+      s.onerror = function () { pile.classList.add('is-static'); };   // keep the still pile
+      document.head.appendChild(s);
+    };
+
+    var startPile = function () {
+      var M = window.Matter;
+      if (!M) return;
+      var originals = Array.prototype.slice.call(pile.children);
+      var copies = window.innerWidth < 600 ? 1 : 2;
+      for (var c = 0; c < copies; c++) {
+        originals.forEach(function (li, i) {
+          var clone = li.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          clone.className = 'pile__pill ' + PILL_COLOURS[(i + c * 2 + 1) % PILL_COLOURS.length];
+          pile.appendChild(clone);
+        });
+      }
+      pile.classList.add('is-live');
+
+      var engine = M.Engine.create();
+      engine.gravity.y = 1.1;
+      var world = engine.world;
+      var items = [];            // { el, w, h, body }
+      var walls = [];
+      var W = 0, H = 0;
+
+      var buildWalls = function () {
+        if (walls.length) M.Composite.remove(world, walls);
+        W = pile.clientWidth; H = pile.clientHeight;
+        var t = 200;
+        walls = [
+          M.Bodies.rectangle(W / 2, H + t / 2, W * 3, t, { isStatic: true }),          // floor
+          M.Bodies.rectangle(-t / 2, 0, t, H * 4, { isStatic: true }),                 // left
+          M.Bodies.rectangle(W + t / 2, 0, t, H * 4, { isStatic: true })               // right
+        ];
+        M.Composite.add(world, walls);
+      };
+
+      var addBody = function (item, x, y) {
+        var w = item.el.offsetWidth, h = item.el.offsetHeight;
+        item.w = w; item.h = h;
+        item.body = M.Bodies.rectangle(
+          x != null ? x : w / 2 + Math.random() * Math.max(1, W - w),
+          y != null ? y : -h - Math.random() * 160,
+          w, h,
+          { chamfer: { radius: h / 2 - 1 }, restitution: 0.35, friction: 0.45, frictionAir: 0.012, density: 0.002,
+            angle: (Math.random() - 0.5) * 0.8 }
+        );
+        item.body.plugin.el = item.el;
+        M.Composite.add(world, item.body);
+        item.el.classList.add('is-on');
+      };
+
+      // Drop pills one after another, in random order
+      var dropAll = function () {
+        var order = items.slice().sort(function () { return Math.random() - 0.5; });
+        order.forEach(function (item, i) { setTimeout(function () { addBody(item); }, i * 110); });
+      };
+
+      var render = function () {
+        for (var i = 0; i < items.length; i++) {
+          var it = items[i];
+          if (!it.body) continue;
+          var p = it.body.position;
+          it.el.style.transform = 'translate3d(' + (p.x - it.w / 2).toFixed(1) + 'px,' + (p.y - it.h / 2).toFixed(1) +
+            'px,0) rotate(' + it.body.angle.toFixed(4) + 'rad)';
+        }
+      };
+      M.Events.on(engine, 'afterUpdate', render);
+
+      Array.prototype.forEach.call(pile.children, function (el) { items.push({ el: el, w: 0, h: 0, body: null }); });
+      buildWalls();
+
+      var runner = M.Runner.create();
+      var running = false;
+      var run = function (on) {
+        if (on && !running) { M.Runner.run(runner, engine); running = true; }
+        if (!on && running) { M.Runner.stop(runner); running = false; }
+      };
+
+      // Pointer position relative to the pile
+      var local = function (e) {
+        var r = pile.getBoundingClientRect();
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
+      };
+      var bodiesAt = function (pt) {
+        return M.Query.point(items.filter(function (it) { return it.body; }).map(function (it) { return it.body; }), pt);
+      };
+      var clamp = function (v, m) { return Math.max(-m, Math.min(m, v)); };
+
+      // Mouse: drag & throw (touch listeners removed so the page still scrolls)
+      var mc = null;
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        var mouse = M.Mouse.create(pile);
+        pile.removeEventListener('wheel', mouse.mousewheel);
+        pile.removeEventListener('touchmove', mouse.mousemove);
+        pile.removeEventListener('touchstart', mouse.mousedown);
+        pile.removeEventListener('touchend', mouse.mouseup);
+        mc = M.MouseConstraint.create(engine, { mouse: mouse, constraint: { stiffness: 0.18, render: { visible: false } } });
+        M.Composite.add(world, mc);
+        M.Events.on(mc, 'startdrag', function () { pile.classList.add('is-dragging'); });
+        M.Events.on(mc, 'enddrag', function () { pile.classList.remove('is-dragging'); });
+      }
+
+      // Hover: pills you sweep over get pushed in the pointer's direction
+      var last = null;
+      pile.addEventListener('pointermove', function (e) {
+        if (e.pointerType !== 'mouse') return;
+        var pt = local(e);
+        if (last && !(mc && mc.body)) {
+          var dx = pt.x - last.x, dy = pt.y - last.y;
+          bodiesAt(pt).forEach(function (b) {
+            M.Body.setVelocity(b, { x: clamp(b.velocity.x + dx * 0.3, 16), y: clamp(b.velocity.y + dy * 0.3 - 1.2, 16) });
+            M.Body.setAngularVelocity(b, clamp(b.angularVelocity + dx * 0.003, 0.25));
+          });
+        }
+        last = pt;
+      });
+      pile.addEventListener('pointerleave', function () { last = null; });
+
+      // Tap / click: the pill jumps
+      var down = null;
+      pile.addEventListener('pointerdown', function (e) { down = { pt: local(e), t: Date.now() }; });
+      pile.addEventListener('pointerup', function (e) {
+        if (!down) return;
+        var pt = local(e);
+        var still = Math.abs(pt.x - down.pt.x) < 6 && Math.abs(pt.y - down.pt.y) < 6 && Date.now() - down.t < 350;
+        down = null;
+        if (!still) return;
+        bodiesAt(pt).forEach(function (b) {
+          M.Body.setVelocity(b, { x: (Math.random() - 0.5) * 8, y: -15 });
+          M.Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.3);
+        });
+      });
+
+      // Double-click: duplicate a pill in another colour
+      pile.addEventListener('dblclick', function (e) {
+        var hit = bodiesAt(local(e))[0];
+        if (!hit || items.length >= MAX_PILLS) return;
+        var clone = hit.plugin.el.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        clone.classList.remove('is-on');
+        clone.className = 'pile__pill ' + PILL_COLOURS[items.length % PILL_COLOURS.length];
+        pile.appendChild(clone);
+        var item = { el: clone, w: 0, h: 0, body: null };
+        items.push(item);
+        addBody(item, hit.position.x, -80);
+      });
+
+      // Run only while visible
+      new IntersectionObserver(function (entries) { run(entries[0].isIntersecting); }).observe(pile);
+      dropAll();
+
+      // Rebuild when the width changes a lot (rotation, window resize)
+      var lastW = W, resizeTimer;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          if (Math.abs(pile.clientWidth - lastW) < 60) return;
+          lastW = pile.clientWidth;
+          items.forEach(function (it) { if (it.body) M.Composite.remove(world, it.body); it.body = null; it.el.classList.remove('is-on'); });
+          buildWalls();
+          dropAll();
+        }, 250);
+      }, { passive: true });
+    };
+
+    // Load the physics engine shortly before the section is reached,
+    // start the fall once a quarter of it is visible.
+    var started = false;
+    new IntersectionObserver(function (entries, obs) {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      loadMatter(function () {
+        new IntersectionObserver(function (en, o2) {
+          if (!en[0].isIntersecting || started) return;
+          started = true;
+          o2.disconnect();
+          (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(startPile);
+        }, { threshold: 0.25 }).observe(pile);
+      });
+    }, { rootMargin: '400px 0px' }).observe(pile);
   }
 })();

@@ -1,0 +1,29 @@
+/*!
+ * Social icons — subset of Font Awesome Free 6.5.2 (brands) by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ * Copyright 2024 Fonticons, Inc.
+ * Only the 7 icons used in the footer are mapped here; the font file is self-hosted.
+ */
+@font-face {
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../fonts/fa-brands-400.woff2") format("woff2");
+}
+.fab {
+  display: inline-block;
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: auto;
+}
+.fa-linkedin-in::before { content: "\f0e1"; }
+.fa-instagram::before   { content: "\f16d"; }
+.fa-x-twitter::before   { content: "\e61b"; }
+.fa-facebook-f::before  { content: "\f39e"; }
+.fa-threads::before     { content: "\e618"; }
+.fa-tiktok::before      { content: "\e07b"; }
+.fa-youtube::before     { content: "\f167"; }

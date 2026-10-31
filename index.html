@@ -38,6 +38,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,700;1,400&family=Sofia+Sans:wght@400;600;700&display=swap">
 
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/fa-brands.css">
 
   <!-- Flags that JS is running (enables scroll-reveal). Falls back safely if main.js never loads. -->
   <script>
@@ -57,6 +58,11 @@
     "slogan": "Stories That Shape Africa",
     "description": "Pin Africa brought together journalism, film, photography and digital storytelling to share the experiences, creativity and perspectives of Africa and its diaspora.",
     "email": "info@pin-africa.com",
+    "founder": {
+      "@type": "Person",
+      "name": "Benedicte Kalombo",
+      "url": "https://benedicte.info/"
+    },
     "sameAs": [
       "https://www.linkedin.com/company/pin-africa/",
       "https://www.instagram.com/pin_africa/",
@@ -87,79 +93,125 @@
   <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4.2" height="15" rx="1"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></symbol>
 </svg>
 
 <a class="skip-link" href="#main">Skip to main content</a>
 
 
 <!-- =====================================================================
-     0. HEADER — full width, sticky; teal-20 rule appears on scroll
+     0. HEADER — fixed "notch": a white tab hanging from the page frame,
+        joined to it by two concave corners. On scroll the frame folds away.
+        Desktop: logo · About ▾ · Selected Work ▾ · Contact · two buttons
+        Mobile:  logo · menu button → drop-down card under the tab
      ===================================================================== -->
 <header class="site-header" id="top">
-  <div class="bar header__inner">
-    <a class="header__logo" href="#intro" aria-label="Pin Africa — back to top">
-      <img src="assets/img/logo-pin-africa-compact.svg" alt="Pin Africa" width="122" height="46">
+  <div class="site-header__frame" aria-hidden="true"></div>
+  <div class="notch">
+    <a class="notch__logo" href="#intro" aria-label="Pin Africa — back to top">
+      <img src="assets/img/logo-pin-africa-compact.svg" alt="Pin Africa" width="117" height="44">
     </a>
 
-    <nav class="main-nav" aria-label="Main">
-      <ul role="list">
-        <li><a href="#about">About</a></li>
-        <li><a href="#work">Selected Work</a></li>
-        <li><a href="#video">Video</a></li>
-        <li><a href="#mobile">Mobile</a></li>
-        <li><a href="#interactive">Interactive</a></li>
-        <li><a href="#articles">Articles</a></li>
-        <li><a href="#contact">Contact</a></li>
+    <nav class="nav" aria-label="Main">
+      <ul class="nav__list" role="list">
+        <li class="nav__item" data-dropdown>
+          <button class="nav__link nav__trigger" type="button" aria-expanded="false" aria-controls="dd-about" data-group="about">
+            About <svg class="icon nav__chev" aria-hidden="true"><use href="#i-chev"/></svg>
+          </button>
+          <div class="dropdown dropdown--about" id="dd-about" hidden>
+            <ul class="dd-list" role="list">
+              <li><a class="dd-link" href="#about"><span class="dd-swatch dd-swatch--teal" aria-hidden="true"></span>About Pin Africa</a></li>
+              <li><a class="dd-link" href="#who-we-were"><span class="dd-swatch dd-swatch--mist" aria-hidden="true"></span>Who we were</a></li>
+              <li><a class="dd-link" href="#mission"><span class="dd-swatch dd-swatch--red" aria-hidden="true"></span>Our mission</a></li>
+              <li><a class="dd-link" href="#values"><span class="dd-swatch dd-swatch--ink" aria-hidden="true"></span>Our values</a></li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav__item" data-dropdown>
+          <button class="nav__link nav__trigger" type="button" aria-expanded="false" aria-controls="dd-work" data-group="work">
+            Selected Work <svg class="icon nav__chev" aria-hidden="true"><use href="#i-chev"/></svg>
+          </button>
+          <div class="dropdown dropdown--work" id="dd-work" hidden>
+            <ul class="dd-tiles" role="list">
+              <li><a class="dd-tile" href="#campaign"><img src="assets/img/campaign-hero.jpg" alt="" width="1920" height="1080" loading="lazy" decoding="async"><span class="dd-tile__num" aria-hidden="true">01</span><span class="dd-tile__label">Featured campaign</span></a></li>
+              <li><a class="dd-tile" href="#video"><img src="https://i.ytimg.com/vi/Ennek61IP0M/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="dd-tile__num" aria-hidden="true">02</span><span class="dd-tile__label">Video</span></a></li>
+              <li><a class="dd-tile" href="#mobile"><img src="https://i.ytimg.com/vi/reJP6_VD6lg/oardefault.jpg" alt="" width="1080" height="1920" loading="lazy" decoding="async"><span class="dd-tile__num" aria-hidden="true">03</span><span class="dd-tile__label">Mobile</span></a></li>
+              <li><a class="dd-tile" href="#interactive"><img src="assets/img/story-congos-ecological-coolers.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async"><span class="dd-tile__num" aria-hidden="true">04</span><span class="dd-tile__label">Interactive</span></a></li>
+              <li><a class="dd-tile" href="#articles"><img src="assets/img/story-mother-bosses.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async"><span class="dd-tile__num" aria-hidden="true">05</span><span class="dd-tile__label">Articles</span></a></li>
+            </ul>
+            <a class="dd-all cta" href="#work">
+              <span class="cta__label">Selected Work</span>
+              <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+            </a>
+          </div>
+        </li>
+        <li class="nav__item"><a class="nav__link" href="#contact" data-group="contact">Contact</a></li>
       </ul>
     </nav>
 
-    <div class="header__actions">
-      <a class="btn btn--red btn--sm" href="#work">Explore our work</a>
-      <a class="btn btn--ink btn--sm" href="#social">Find us on social</a>
+    <div class="notch__actions">
+      <a class="btn btn--sm btn--line" href="#social"><span class="roll"><span class="roll__a">Find us on social</span><span class="roll__b" aria-hidden="true">Find us on social</span></span></a>
+      <a class="btn btn--sm btn--red" href="#work"><span class="roll"><span class="roll__a">Explore our work</span><span class="roll__b" aria-hidden="true">Explore our work</span></span></a>
     </div>
 
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">
-      <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
-      <span class="sr-only">Open menu</span>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu">
+      <span class="burger__lines" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="sr-only">Menu</span>
     </button>
   </div>
 </header>
 
-<!-- Full-screen mobile menu (ink background) -->
-<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
-  <div class="bar mobile-menu__bar">
-    <img src="assets/img/logo-pin-africa-white-compact.svg" alt="Pin Africa" width="106" height="40">
-    <button class="menu-close" type="button">
-      <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
-      <span class="sr-only">Close menu</span>
-    </button>
-  </div>
-  <nav class="bar mobile-menu__nav" aria-label="Main (mobile)">
-    <ul role="list">
-      <li><a href="#about">About</a></li>
-      <li><a href="#work">Selected Work</a></li>
-      <li><a href="#video">Video</a></li>
-      <li><a href="#mobile">Mobile</a></li>
-      <li><a href="#interactive">Interactive</a></li>
-      <li><a href="#articles">Articles</a></li>
-      <li><a href="#contact">Contact</a></li>
+<!-- Mobile menu: white card dropping from the tab, over a dimmed page -->
+<div class="menu-backdrop" hidden></div>
+<div class="menu-card" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <nav aria-label="Main (mobile)">
+    <ul class="mm-list" role="list">
+      <li class="mm-group">
+        <a class="mm-link" href="#about" data-group="about">About <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <ul class="mm-sub" role="list">
+          <li><a href="#who-we-were">Who we were</a></li>
+          <li><a href="#mission">Our mission</a></li>
+          <li><a href="#values">Our values</a></li>
+        </ul>
+      </li>
+      <li class="mm-group">
+        <a class="mm-link" href="#work" data-group="work">Selected Work <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <ul class="mm-sub" role="list">
+          <li><a href="#campaign">Featured campaign</a></li>
+          <li><a href="#video">Video</a></li>
+          <li><a href="#mobile">Mobile</a></li>
+          <li><a href="#interactive">Interactive</a></li>
+          <li><a href="#articles">Articles</a></li>
+        </ul>
+      </li>
+      <li class="mm-group"><a class="mm-link" href="#contact" data-group="contact">Contact <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
     </ul>
   </nav>
-  <div class="bar mobile-menu__actions">
+  <div class="mm-actions">
     <a class="btn btn--red" href="#work">Explore our work</a>
     <a class="btn btn--ink" href="#social">Find us on social</a>
   </div>
+  <ul class="mm-social" role="list">
+    <li><a href="https://www.linkedin.com/company/pin-africa/" target="_blank" rel="noopener"><i class="fab fa-linkedin-in" aria-hidden="true"></i><span class="sr-only">Pin Africa on LinkedIn (opens in a new tab)</span></a></li>
+    <li><a href="https://www.instagram.com/pin_africa/" target="_blank" rel="noopener"><i class="fab fa-instagram" aria-hidden="true"></i><span class="sr-only">Pin Africa on Instagram (opens in a new tab)</span></a></li>
+    <li><a href="https://x.com/pin_africa" target="_blank" rel="noopener"><i class="fab fa-x-twitter" aria-hidden="true"></i><span class="sr-only">Pin Africa on X (opens in a new tab)</span></a></li>
+    <li><a href="https://www.facebook.com/pinafricanow/" target="_blank" rel="noopener"><i class="fab fa-facebook-f" aria-hidden="true"></i><span class="sr-only">Pin Africa on Facebook (opens in a new tab)</span></a></li>
+    <li><a href="https://www.threads.com/@pin_africa" target="_blank" rel="noopener"><i class="fab fa-threads" aria-hidden="true"></i><span class="sr-only">Pin Africa on Threads (opens in a new tab)</span></a></li>
+    <li><a href="https://www.tiktok.com/@pin_africa" target="_blank" rel="noopener"><i class="fab fa-tiktok" aria-hidden="true"></i><span class="sr-only">Pin Africa on TikTok (opens in a new tab)</span></a></li>
+    <li><a href="https://www.youtube.com/@pinafrica3470" target="_blank" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i><span class="sr-only">Pin Africa on YouTube (opens in a new tab)</span></a></li>
+  </ul>
 </div>
 
 
 <main id="main">
 
   <!-- ===================================================================
-       1. HERO (#intro)
+       1. HERO (#intro) — dark rounded panel under the tab; the scrolling
+       photo strip runs along its bottom
        =================================================================== -->
-  <section class="hero" id="intro" aria-labelledby="intro-title">
+  <section class="hero panel theme-ink" id="intro" aria-labelledby="intro-title">
     <div class="container hero__inner">
-      <p class="eyebrow">Pin Africa</p>
+      <p class="hero__badge">Pin Africa</p>
       <h1 id="intro-title">Stories That Shape Africa</h1>
       <p class="hero__sub">African stories. Told with depth, dignity and an authentic voice.</p>
       <p class="hero__intro">Pin Africa brought together journalism, film, photography and digital storytelling to share the experiences, creativity and perspectives of Africa and its diaspora.</p>
@@ -173,11 +225,11 @@
 
       <div class="hero__actions">
         <a class="btn btn--red btn--icon" href="#work">
-          Explore our work
+          <span class="roll"><span class="roll__a">Explore our work</span><span class="roll__b" aria-hidden="true">Explore our work</span></span>
           <span class="btn__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
         </a>
-        <a class="btn btn--outline btn--icon" href="#social">
-          Find us on social media
+        <a class="btn btn--light btn--icon" href="#social">
+          <span class="roll"><span class="roll__a">Find us on social media</span><span class="roll__b" aria-hidden="true">Find us on social media</span></span>
           <span class="btn__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
         </a>
       </div>
@@ -279,78 +331,84 @@
 
 
   <!-- ===================================================================
-       2. ABOUT (#about) — solid teal band, bento of text cards + photos
-       [PLACEHOLDER] about-01.jpg (photo block), about-02.jpg (wide photo card)
+       2. ABOUT PIN AFRICA (#about) — white; the five values fall as pills,
+       pile up, react to the pointer (drag with a mouse, tap on touch).
+       The first five pills are the real list; main.js adds coloured copies.
        =================================================================== -->
-  <section class="section theme-teal" id="about" aria-labelledby="about-title">
+  <section class="about-intro" id="about" aria-labelledby="about-title">
     <div class="container">
-      <div class="about__head">
-        <h2 id="about-title" data-reveal>About Pin Africa</h2>
-        <ul class="value-pills" role="list" data-reveal style="--i:1">
-          <li class="value-pill"><span class="value-pill__icon" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Integrity</li>
-          <li class="value-pill"><span class="value-pill__icon" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Dignity</li>
-          <li class="value-pill"><span class="value-pill__icon" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>African agency</li>
-          <li class="value-pill"><span class="value-pill__icon" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Creativity</li>
-          <li class="value-pill"><span class="value-pill__icon" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Public interest</li>
+      <h2 id="about-title" data-reveal>About Pin Africa</h2>
+    </div>
+    <ul class="pile" role="list" aria-label="Our values" data-pile>
+      <li class="pile__pill pill--teal"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Integrity</li>
+      <li class="pile__pill pill--red"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Dignity</li>
+      <li class="pile__pill pill--ink"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>African agency</li>
+      <li class="pile__pill pill--mist"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Creativity</li>
+      <li class="pile__pill pill--blush"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Public interest</li>
+    </ul>
+  </section>
+
+
+  <!-- ===================================================================
+       3. WHO WE WERE — teal-10 panel with a photo
+       [PLACEHOLDER] about-01.jpg (portrait 4:5)
+       =================================================================== -->
+  <section class="section panel theme-tint" id="who-we-were" aria-labelledby="who-title">
+    <div class="container who">
+      <figure class="photo who__photo" data-reveal>
+        <img src="assets/img/about-01.jpg" alt="Photo from Pin Africa’s reporting" width="1200" height="1500" loading="lazy" decoding="async">
+        <ul class="chip-stack" role="list">
+          <li class="chip"><span class="chip__icon" aria-hidden="true"><svg class="icon"><use href="#i-pen"/></svg></span>Journalism</li>
+          <li class="chip"><span class="chip__icon" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg></span>Film</li>
+          <li class="chip"><span class="chip__icon" aria-hidden="true"><svg class="icon"><use href="#i-photo"/></svg></span>Photography</li>
+          <li class="chip"><span class="chip__icon" aria-hidden="true"><svg class="icon"><use href="#i-screen"/></svg></span>Digital storytelling</li>
         </ul>
-      </div>
-
-      <div class="bento">
-        <article class="card bento__who" data-reveal>
-          <p class="card__kicker" aria-hidden="true">Pin Africa</p>
-          <h3 class="label">Who we were</h3>
-          <div class="prose">
-            <p>Pin Africa was a mission-driven African digital media platform and social enterprise committed to independent journalism with an authentic African voice and a nuanced perspective.</p>
-            <p>We celebrated culture, heritage and creativity, amplified innovation, and examined the issues shaping African lives. Our work challenged narrow portrayals of the continent by placing African voices, knowledge and lived experience at the centre.</p>
-          </div>
-        </article>
-
-        <article class="card bento__mission" data-reveal style="--i:1">
-          <h3 class="label">Our mission</h3>
-          <p class="mission__text">To broaden the global understanding of Africa through credible, compelling storytelling, while helping African storytellers develop the skills and opportunities to tell their own stories.</p>
-        </article>
-
-        <!-- Full-width photo card (third paragraph of “Who we were”) -->
-        <article class="photo-card bento__acquire on-photo" data-reveal aria-labelledby="acquire-title">
-          <img class="photo-card__img" src="assets/img/about-02.jpg" alt="Photo from Acquire by Pin Africa" width="1920" height="800" loading="lazy" decoding="async">
-          <div class="photo-card__body">
-            <h3 id="acquire-title">Acquire by Pin Africa</h3>
-            <p>Through Acquire by Pin Africa, we also supported emerging journalists and storytellers with skills, resources and practical experience.</p>
-            <a class="cta" href="https://acquire.pin-africa.com/" target="_blank" rel="noopener">
-              <span class="cta__label">acquire.pin-africa.com</span>
-              <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
-              <span class="sr-only">(opens in a new tab)</span>
-            </a>
-          </div>
-        </article>
-
-        <figure class="photo bento__photo-a" data-reveal>
-          <img src="assets/img/about-01.jpg" alt="Photo from Pin Africa’s reporting" width="1200" height="900" loading="lazy" decoding="async">
-          <ul class="chip-stack" role="list">
-            <li class="chip"><span class="chip__icon" aria-hidden="true"><svg class="icon"><use href="#i-pen"/></svg></span>Journalism</li>
-            <li class="chip"><span class="chip__icon" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg></span>Film</li>
-            <li class="chip"><span class="chip__icon" aria-hidden="true"><svg class="icon"><use href="#i-photo"/></svg></span>Photography</li>
-            <li class="chip"><span class="chip__icon" aria-hidden="true"><svg class="icon"><use href="#i-screen"/></svg></span>Digital storytelling</li>
-          </ul>
-        </figure>
-
-        <article class="card bento__values" data-reveal style="--i:1">
-          <h3>Our values</h3>
-          <ul class="values" role="list">
-            <li><span class="check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span><h4>Integrity</h4><p>Accurate, independent and responsible journalism.</p></li>
-            <li><span class="check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span><h4>Dignity</h4><p>Stories that respect the people and communities they portray.</p></li>
-            <li><span class="check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span><h4>African agency</h4><p>African voices and perspectives shaping the narrative.</p></li>
-            <li><span class="check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span><h4>Creativity</h4><p>Film, photography and digital formats that help audiences see and understand more.</p></li>
-            <li><span class="check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span><h4>Public interest</h4><p>Free and independent media that inform communities and contribute to peaceful, prosperous and democratic societies.</p></li>
-          </ul>
-        </article>
+      </figure>
+      <div data-reveal style="--i:1">
+        <p class="who__kicker" aria-hidden="true">Pin Africa</p>
+        <h2 class="label" id="who-title">Who we were</h2>
+        <div class="prose">
+          <p>Pin Africa was a mission-driven African digital media platform and social enterprise committed to independent journalism with an authentic African voice and a nuanced perspective.</p>
+          <p>We celebrated culture, heritage and creativity, amplified innovation, and examined the issues shaping African lives. Our work challenged narrow portrayals of the continent by placing African voices, knowledge and lived experience at the centre.</p>
+          <p>Through Acquire by Pin Africa, we also supported emerging journalists and storytellers with skills, resources and practical experience.</p>
+        </div>
       </div>
     </div>
   </section>
 
 
   <!-- ===================================================================
-       3. SELECTED WORK (#work) — index of image tiles
+       4. OUR MISSION — teal panel, statement in large white type
+       =================================================================== -->
+  <section class="panel theme-teal mission" id="mission" aria-labelledby="mission-title">
+    <div class="container">
+      <h2 class="label label-pill" id="mission-title" data-reveal>Our mission</h2>
+      <p class="mission__text" data-reveal style="--i:1">To broaden the global understanding of Africa through credible, compelling storytelling, while helping African storytellers develop the skills and opportunities to tell their own stories.</p>
+    </div>
+  </section>
+
+
+  <!-- ===================================================================
+       5. OUR VALUES — white; one colour per value (same as the pills)
+       =================================================================== -->
+  <section class="section" id="values" aria-labelledby="values-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2 id="values-title">Our values</h2>
+      </div>
+      <ul class="values-grid" role="list">
+        <li class="value-card value-card--mist" data-reveal style="--i:0"><span class="value-card__num" aria-hidden="true">01</span><h3>Integrity</h3><p>Accurate, independent and responsible journalism.</p></li>
+        <li class="value-card value-card--red" data-reveal style="--i:1"><span class="value-card__num" aria-hidden="true">02</span><h3>Dignity</h3><p>Stories that respect the people and communities they portray.</p></li>
+        <li class="value-card value-card--ink" data-reveal style="--i:2"><span class="value-card__num" aria-hidden="true">03</span><h3>African agency</h3><p>African voices and perspectives shaping the narrative.</p></li>
+        <li class="value-card value-card--blush" data-reveal style="--i:3"><span class="value-card__num" aria-hidden="true">04</span><h3>Creativity</h3><p>Film, photography and digital formats that help audiences see and understand more.</p></li>
+        <li class="value-card value-card--tint" data-reveal style="--i:4"><span class="value-card__num" aria-hidden="true">05</span><h3>Public interest</h3><p>Free and independent media that inform communities and contribute to peaceful, prosperous and democratic societies.</p></li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- ===================================================================
+       6. SELECTED WORK (#work) — index of image tiles
        =================================================================== -->
   <section class="section work" id="work" aria-labelledby="work-title">
     <div class="container">
@@ -403,27 +461,29 @@
 
 
   <!-- ===================================================================
-       4. FEATURED CAMPAIGN (#campaign) — full-bleed photo
+       7. FEATURED CAMPAIGN (#campaign) — photo panel, key figures beside the title
        =================================================================== -->
   <section id="campaign" aria-labelledby="campaign-title">
-    <div class="campaign-hero on-photo">
+    <div class="campaign-hero panel on-photo">
       <!-- [PLACEHOLDER] campaign-hero.jpg — add the photographer's credit with the final image -->
       <figure class="campaign-hero__media">
         <img src="assets/img/campaign-hero.jpg" alt="Photograph from the We (Are) Invested virtual exhibition" width="1920" height="1080" loading="lazy" decoding="async">
       </figure>
       <div class="container campaign-hero__content">
-        <p class="eyebrow" data-reveal>Featured campaign</p>
-        <h2 id="campaign-title" data-reveal style="--i:1">We (Are) Invested</h2>
-        <p class="campaign-hero__byline" data-reveal style="--i:2">Empowering African women through photography · With Unpublished Africa · March 2024</p>
+        <div>
+          <p class="eyebrow" data-reveal>Featured campaign</p>
+          <h2 id="campaign-title" data-reveal style="--i:1">We (Are) Invested</h2>
+          <p class="campaign-hero__byline" data-reveal style="--i:2">Empowering African women through photography · With Unpublished Africa · March 2024</p>
+        </div>
+        <!-- Key figures, right next to the title block -->
+        <div class="figures" data-reveal style="--i:3">
+          <p class="figure"><span class="figure__num">19</span> <span class="figure__label label">women photographers and photojournalists</span></p>
+          <p class="figure"><span class="figure__num">15</span> <span class="figure__label label">African countries</span></p>
+        </div>
       </div>
     </div>
 
     <div class="container">
-      <div class="stats" data-reveal>
-        <p class="stat"><span class="stat__num">19</span> <span class="stat__label label">women photographers and photojournalists</span></p>
-        <p class="stat"><span class="stat__num">15</span> <span class="stat__label label">African countries</span></p>
-      </div>
-
       <div class="campaign-body">
         <p class="campaign-body__lead" data-reveal>A shared commitment to women’s visibility and progress.</p>
         <div class="two-col prose" data-reveal>
@@ -464,80 +524,86 @@
 
 
   <!-- ===================================================================
-       5. VIDEO STORYTELLING (#video) — teal-10 band
+       8. VIDEO STORYTELLING (#video) — teal-10 panel, three films in one row
        YouTube facade: thumbnail + play button; the youtube-nocookie player
        is only loaded on click (main.js → videos). One video plays at a time.
        =================================================================== -->
-  <section class="section theme-tint" id="video" aria-labelledby="video-title">
+  <section class="section panel theme-tint" id="video" aria-labelledby="video-title">
     <div class="container">
       <div class="section-head" data-reveal>
         <h2 id="video-title">Video storytelling</h2>
         <p>Selected films from Pin Africa’s video storytelling.</p>
       </div>
 
-      <article class="card card--lift video-feature" data-reveal>
-        <a class="yt" id="yt-ocean" href="https://www.youtube.com/watch?v=Ennek61IP0M" target="_blank" rel="noopener"
-           data-yt="Ennek61IP0M" data-yt-title="The Ocean is the Limit: Surviving Illegal Migration" tabindex="-1" aria-hidden="true">
-          <img src="https://i.ytimg.com/vi/Ennek61IP0M/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
-          <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
-        </a>
-        <div class="video-feature__body">
-          <p class="chip chip--status">Featured video</p>
-          <h3 class="story-title">The Ocean is the Limit: Surviving Illegal Migration</h3>
-          <a class="cta" href="https://www.youtube.com/watch?v=Ennek61IP0M" target="_blank" rel="noopener" data-yt-play="yt-ocean">
-            <span class="cta__label">Watch the film</span>
-            <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
-            <span class="sr-only">: The Ocean is the Limit: Surviving Illegal Migration</span>
-          </a>
-        </div>
-      </article>
-
-      <div class="video-grid">
-        <article class="card card--lift video-card" data-reveal style="--i:0">
-          <a class="yt" id="yt-edna" href="https://www.youtube.com/watch?v=AvYAr4RrlSc" target="_blank" rel="noopener"
-             data-yt="AvYAr4RrlSc" data-yt-title="Edna Adan Building a Hospital in Somaliland" tabindex="-1" aria-hidden="true">
-            <img src="https://i.ytimg.com/vi/AvYAr4RrlSc/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async">
-            <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
-          </a>
-          <div class="video-card__body">
-            <h3 class="story-title">Edna Adan Building a Hospital in Somaliland</h3>
-            <p>The story of Edna Adan’s work to build a hospital in Somaliland using her pension.</p>
-            <a class="cta" href="https://www.youtube.com/watch?v=AvYAr4RrlSc" target="_blank" rel="noopener" data-yt-play="yt-edna">
-              <span class="cta__label">Watch the film</span>
-              <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
-              <span class="sr-only">: Edna Adan Building a Hospital in Somaliland</span>
+      <ul class="video-row" role="list">
+        <li data-reveal style="--i:0">
+          <article class="card card--lift video-card">
+            <a class="yt" id="yt-ocean" href="https://www.youtube.com/watch?v=Ennek61IP0M" target="_blank" rel="noopener"
+               data-yt="Ennek61IP0M" data-yt-title="The Ocean is the Limit: Surviving Illegal Migration" tabindex="-1" aria-hidden="true">
+              <img src="https://i.ytimg.com/vi/Ennek61IP0M/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
+              <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
             </a>
-          </div>
-        </article>
+            <div class="video-card__body">
+              <p class="chip chip--status">Featured video</p>
+              <h3 class="story-title">The Ocean is the Limit: Surviving Illegal Migration</h3>
+              <a class="cta" href="https://www.youtube.com/watch?v=Ennek61IP0M" target="_blank" rel="noopener" data-yt-play="yt-ocean">
+                <span class="cta__label">Watch the film</span>
+                <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+                <span class="sr-only">: The Ocean is the Limit: Surviving Illegal Migration</span>
+              </a>
+            </div>
+          </article>
+        </li>
 
-        <article class="card card--lift video-card" data-reveal style="--i:1">
-          <a class="yt" id="yt-afif" href="https://www.youtube.com/watch?v=sEjRwnlpWMI" target="_blank" rel="noopener"
-             data-yt="sEjRwnlpWMI" data-yt-title="Afif Ben Yedder on Building IC Publications" tabindex="-1" aria-hidden="true">
-            <img src="https://i.ytimg.com/vi/sEjRwnlpWMI/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
-            <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
-          </a>
-          <div class="video-card__body">
-            <h3 class="story-title">Afif Ben Yedder on Building IC Publications</h3>
-            <p>The founder of IC Publications reflects on success.</p>
-            <a class="cta" href="https://www.youtube.com/watch?v=sEjRwnlpWMI" target="_blank" rel="noopener" data-yt-play="yt-afif">
-              <span class="cta__label">Watch the interview</span>
-              <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
-              <span class="sr-only">: Afif Ben Yedder on Building IC Publications</span>
+        <li data-reveal style="--i:1">
+          <article class="card card--lift video-card">
+            <a class="yt" id="yt-edna" href="https://www.youtube.com/watch?v=AvYAr4RrlSc" target="_blank" rel="noopener"
+               data-yt="AvYAr4RrlSc" data-yt-title="Edna Adan Building a Hospital in Somaliland" tabindex="-1" aria-hidden="true">
+              <img src="https://i.ytimg.com/vi/AvYAr4RrlSc/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async">
+              <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
             </a>
-          </div>
-        </article>
-      </div>
+            <div class="video-card__body">
+              <h3 class="story-title">Edna Adan Building a Hospital in Somaliland</h3>
+              <p>The story of Edna Adan’s work to build a hospital in Somaliland using her pension.</p>
+              <a class="cta" href="https://www.youtube.com/watch?v=AvYAr4RrlSc" target="_blank" rel="noopener" data-yt-play="yt-edna">
+                <span class="cta__label">Watch the film</span>
+                <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+                <span class="sr-only">: Edna Adan Building a Hospital in Somaliland</span>
+              </a>
+            </div>
+          </article>
+        </li>
+
+        <li data-reveal style="--i:2">
+          <article class="card card--lift video-card">
+            <a class="yt" id="yt-afif" href="https://www.youtube.com/watch?v=sEjRwnlpWMI" target="_blank" rel="noopener"
+               data-yt="sEjRwnlpWMI" data-yt-title="Afif Ben Yedder on Building IC Publications" tabindex="-1" aria-hidden="true">
+              <img src="https://i.ytimg.com/vi/sEjRwnlpWMI/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
+              <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
+            </a>
+            <div class="video-card__body">
+              <h3 class="story-title">Afif Ben Yedder on Building IC Publications</h3>
+              <p>The founder of IC Publications reflects on success.</p>
+              <a class="cta" href="https://www.youtube.com/watch?v=sEjRwnlpWMI" target="_blank" rel="noopener" data-yt-play="yt-afif">
+                <span class="cta__label">Watch the interview</span>
+                <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+                <span class="sr-only">: Afif Ben Yedder on Building IC Publications</span>
+              </a>
+            </div>
+          </article>
+        </li>
+      </ul>
     </div>
   </section>
 
 
   <!-- ===================================================================
-       6. MOBILE STORYTELLING (#mobile) — interactive 9:16 reel
+       9. MOBILE STORYTELLING (#mobile) — interactive 9:16 reel
        Cards keep the exact 1080 × 1920 format; Shorts covers come from
        YouTube at 1080 × 1920 (oardefault.jpg). Prev / next buttons, scroll
        progress, pointer tilt, inline playback (one video at a time).
        =================================================================== -->
-  <section class="section theme-ink reel-section" id="mobile" aria-labelledby="mobile-title">
+  <section class="section panel theme-ink" id="mobile" aria-labelledby="mobile-title">
     <div class="reel" data-reel>
       <div class="container">
         <div class="section-head section-head--split" data-reveal>
@@ -637,9 +703,9 @@
 
 
   <!-- ===================================================================
-       7. VISUAL INTERACTIVE STORYTELLING (#interactive) — teal-10 band
+       10. VISUAL INTERACTIVE STORYTELLING (#interactive) — teal-10 band
        =================================================================== -->
-  <section class="section theme-tint" id="interactive" aria-labelledby="interactive-title">
+  <section class="section panel theme-tint" id="interactive" aria-labelledby="interactive-title">
     <div class="container">
       <div class="section-head" data-reveal>
         <h2 id="interactive-title">Visual interactive storytelling</h2>
@@ -709,7 +775,7 @@
 
 
   <!-- ===================================================================
-       8. ARTICLES (#articles) — editorial list
+       11. ARTICLES (#articles) — editorial list
        =================================================================== -->
   <section class="section" id="articles" aria-labelledby="articles-title">
     <div class="container">
@@ -774,7 +840,7 @@
 
 
   <!-- ===================================================================
-       9. EXPLORE MORE OF OUR WORK — mono label = destination address
+       12. EXPLORE MORE OF OUR WORK — mono label = destination address
        =================================================================== -->
   <section class="section more" style="padding-top:0" aria-labelledby="more-title">
     <div class="container">
@@ -808,13 +874,12 @@
         <li class="card card--lift more-card is-linked" data-reveal style="--i:2">
           <div class="more-card__head">
             <h3 class="more-card__title">Founder’s portfolio</h3>
-            <!-- [PLACEHOLDER] name and link to insert -->
-            <p class="label more-card__label">[LIEN À INSÉRER]</p>
+            <p class="label more-card__label">benedicte.info</p>
           </div>
-          <p class="more-card__text"><span class="placeholder">[NOM ET LIEN À INSÉRER]</span></p>
-          <a class="round-btn stretched-link placeholder" href="#TODO-founder-link">
+          <p class="more-card__text">Benedicte Kalombo</p>
+          <a class="round-btn stretched-link" href="https://benedicte.info/" target="_blank" rel="noopener">
             <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
-            <span class="sr-only">Founder’s portfolio</span>
+            <span class="sr-only">Founder’s portfolio: Benedicte Kalombo (opens in a new tab)</span>
           </a>
         </li>
       </ul>
@@ -823,7 +888,7 @@
 
 
   <!-- ===================================================================
-       10. CONTACT & ARCHIVE — two full-bleed 50/50 blocks on the footer
+       13. CONTACT & ARCHIVE — two rounded 50/50 panels just before the footer
        =================================================================== -->
   <section class="prefooter" aria-label="Contact and archive">
     <div class="prefooter__block theme-red" id="contact">
@@ -854,42 +919,56 @@
 
 
 <!-- =====================================================================
-     11. FOOTER — ink, full width
+     14. FOOTER — ink panel: logo, big tagline, social icons, links, contact
+     Social icons: self-hosted subset of Font Awesome Free (assets/css/fa-brands.css)
      ===================================================================== -->
 <footer class="site-footer" id="social">
   <div class="footer__inner">
-    <div class="footer__top">
-      <img class="footer__logo" src="assets/img/logo-pin-africa-white.svg" alt="Pin Africa — Stories That Shape Africa" width="240" height="117" loading="lazy">
+    <div class="footer__head">
+      <img class="footer__logo" src="assets/img/logo-pin-africa-white-compact.svg" alt="Pin Africa" width="220" height="83" loading="lazy">
+      <a class="to-top" href="#top">
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+        <span class="sr-only">Back to top</span>
+      </a>
+    </div>
 
-      <div class="footer__social">
+    <p class="footer__tagline" aria-hidden="true">Stories That Shape <span>Africa</span></p>
+
+    <div class="footer__grid">
+      <div class="footer__col">
         <h3>Find us on social media</h3>
-        <!-- Monograms can be swapped for official brand icons (keep the sr-only text). -->
         <ul class="social" role="list">
-          <li><a href="https://www.linkedin.com/company/pin-africa/" target="_blank" rel="noopener">LI<span class="sr-only"> — Pin Africa on LinkedIn (opens in a new tab)</span></a></li>
-          <li><a href="https://www.instagram.com/pin_africa/" target="_blank" rel="noopener">IG<span class="sr-only"> — Pin Africa on Instagram (opens in a new tab)</span></a></li>
-          <li><a href="https://x.com/pin_africa" target="_blank" rel="noopener">X<span class="sr-only"> — Pin Africa on X (opens in a new tab)</span></a></li>
-          <li><a href="https://www.facebook.com/pinafricanow/" target="_blank" rel="noopener">FB<span class="sr-only"> — Pin Africa on Facebook (opens in a new tab)</span></a></li>
-          <li><a href="https://www.threads.com/@pin_africa" target="_blank" rel="noopener">TH<span class="sr-only"> — Pin Africa on Threads (opens in a new tab)</span></a></li>
-          <li><a href="https://www.tiktok.com/@pin_africa" target="_blank" rel="noopener">TT<span class="sr-only"> — Pin Africa on TikTok (opens in a new tab)</span></a></li>
-          <li><a href="https://www.youtube.com/@pinafrica3470" target="_blank" rel="noopener">YT<span class="sr-only"> — Pin Africa on YouTube (opens in a new tab)</span></a></li>
+          <li><a href="https://www.linkedin.com/company/pin-africa/" target="_blank" rel="noopener"><i class="fab fa-linkedin-in" aria-hidden="true"></i><span class="sr-only">Pin Africa on LinkedIn (opens in a new tab)</span></a></li>
+          <li><a href="https://www.instagram.com/pin_africa/" target="_blank" rel="noopener"><i class="fab fa-instagram" aria-hidden="true"></i><span class="sr-only">Pin Africa on Instagram (opens in a new tab)</span></a></li>
+          <li><a href="https://x.com/pin_africa" target="_blank" rel="noopener"><i class="fab fa-x-twitter" aria-hidden="true"></i><span class="sr-only">Pin Africa on X (opens in a new tab)</span></a></li>
+          <li><a href="https://www.facebook.com/pinafricanow/" target="_blank" rel="noopener"><i class="fab fa-facebook-f" aria-hidden="true"></i><span class="sr-only">Pin Africa on Facebook (opens in a new tab)</span></a></li>
+          <li><a href="https://www.threads.com/@pin_africa" target="_blank" rel="noopener"><i class="fab fa-threads" aria-hidden="true"></i><span class="sr-only">Pin Africa on Threads (opens in a new tab)</span></a></li>
+          <li><a href="https://www.tiktok.com/@pin_africa" target="_blank" rel="noopener"><i class="fab fa-tiktok" aria-hidden="true"></i><span class="sr-only">Pin Africa on TikTok (opens in a new tab)</span></a></li>
+          <li><a href="https://www.youtube.com/@pinafrica3470" target="_blank" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i><span class="sr-only">Pin Africa on YouTube (opens in a new tab)</span></a></li>
         </ul>
+      </div>
+
+      <nav class="footer__col footer__links" aria-label="Footer">
+        <ul role="list">
+          <li><a href="#about">About</a></li>
+          <li><a href="#work">Selected Work</a></li>
+          <li><a href="#video">Video</a></li>
+          <li><a href="#mobile">Mobile</a></li>
+          <li><a href="#interactive">Interactive</a></li>
+          <li><a href="#articles">Articles</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <a class="footer__email" href="mailto:info@pin-africa.com">info@pin-africa.com</a>
       </div>
     </div>
 
-    <nav class="footer__nav" aria-label="Footer">
-      <ul role="list">
-        <li><a href="#about">About</a></li>
-        <li><a href="#work">Selected Work</a></li>
-        <li><a href="#video">Video</a></li>
-        <li><a href="#mobile">Mobile</a></li>
-        <li><a href="#interactive">Interactive</a></li>
-        <li><a href="#articles">Articles</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-
-    <!-- No years of activity shown until confirmed -->
-    <p class="footer__legal">© Pin Africa</p>
+    <div class="footer__bottom">
+      <!-- No years of activity shown until confirmed -->
+      <p>© Pin Africa</p>
+    </div>
   </div>
 </footer>
 
