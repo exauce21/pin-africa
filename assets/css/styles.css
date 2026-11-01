@@ -960,11 +960,55 @@ body.menu-open { overflow: hidden; }
 .mission { text-align: center; padding-block: clamp(80px, 11vw, 160px); }
 .mission h2 { margin-bottom: clamp(24px, 3vw, 40px); }
 .mission__text {
-  max-width: 26ch;
   margin: 0 auto;
-  font: var(--w-display) clamp(1.75rem, 1.05rem + 2.8vw, 3.75rem) / 1.12 var(--font-display);  /* large text */
+  font: var(--w-display) clamp(1.5rem, 0.8rem + 2.2vw, 3.25rem) / 1.15 var(--font-display);  /* large text */
   letter-spacing: -0.02em;
-  text-wrap: balance;
+}
+.mission__line { display: block; text-wrap: balance; }
+
+/* Scroll-driven version (JS + motion allowed): the panel is tall, its stage
+   sticks, and the four lines light up one by one with a 01 / 04 pager */
+.mission__pager { display: none; }
+.mission.is-scrolly { height: 280vh; height: 280svh; padding-block: 0; }
+.mission.is-scrolly .mission__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  align-content: center;
+}
+.mission.is-scrolly .mission__line {
+  opacity: 0.25;
+  translate: 0 0.25em;
+  transition: opacity 0.6s var(--ease), translate 0.6s var(--ease);
+}
+.mission.is-scrolly .mission__line.is-on { opacity: 1; translate: none; }
+.mission.is-scrolly .mission__pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: clamp(32px, 4vw, 56px);
+}
+.mission__counter { font: 700 var(--fs-label) / 1 var(--font-display); letter-spacing: var(--tracking-label); min-width: 4.5ch; }
+.mission__bars { display: flex; gap: 6px; }
+.mission__bars span {
+  position: relative;
+  width: clamp(28px, 4vw, 48px);
+  height: 3px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.25);
+  overflow: hidden;
+}
+.mission__bars span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--white);
+  transform-origin: left;
+  scale: var(--p, 0) 1;
 }
 
 

@@ -6,6 +6,7 @@
    2. Drop-downs (desktop) & mobile menu card (focus trap, Escape)
    3. Scroll spy (current group marked with a red dot)
    4. Scroll reveal (fade + 16px, staggered via --i)
+   4b. Mission (four lines lit one by one on scroll, 01 / 04 pager)
    5. Photo strip (pause / play button, pause when off-screen)
    6. YouTube facade (youtube-nocookie player on click, one video at a time)
    7. Mobile storytelling reel (prev / next, counter, progress, pointer tilt)
@@ -229,6 +230,46 @@
     each(revealEls, function (el) { revealIO.observe(el); });
   }
   reduceMotion.addEventListener('change', function (mq) { if (mq.matches) showAll(); });
+
+
+  /* 4b. MISSION — FOUR LINES PAGED BY SCROLL ----------------------------- */
+  // Without JS or with reduced motion the four lines simply show in full.
+  var mission = document.querySelector('[data-mission]');
+  if (mission) {
+    var lines = mission.querySelectorAll('.mission__line');
+    var bars = mission.querySelectorAll('.mission__bars span');
+    var missionCurrent = mission.querySelector('[data-mission-current]');
+    var missionTick = false;
+
+    var updateMission = function () {
+      missionTick = false;
+      if (!mission.classList.contains('is-scrolly')) return;
+      var r = mission.getBoundingClientRect();
+      var range = r.height - window.innerHeight;
+      var p = range > 0 ? Math.max(0, Math.min(1, -r.top / range)) : 1;
+      var steps = p * lines.length;
+      var index = Math.min(lines.length - 1, Math.floor(steps));
+      each(lines, function (line, i) { line.classList.toggle('is-on', i <= index); });
+      each(bars, function (bar, i) {
+        bar.style.setProperty('--p', Math.max(0, Math.min(1, steps - i)).toFixed(3));
+      });
+      missionCurrent.textContent = String(index + 1).padStart(2, '0');
+    };
+
+    var setMissionMode = function () {
+      mission.classList.toggle('is-scrolly', !reduceMotion.matches);
+      updateMission();
+    };
+
+    window.addEventListener('scroll', function () {
+      if (missionTick) return;
+      missionTick = true;
+      window.requestAnimationFrame(updateMission);
+    }, { passive: true });
+    window.addEventListener('resize', updateMission, { passive: true });
+    reduceMotion.addEventListener('change', setMissionMode);
+    setMissionMode();
+  }
 
 
   /* 5. PHOTO STRIP -------------------------------------------------------- */
