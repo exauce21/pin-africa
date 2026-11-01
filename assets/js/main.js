@@ -6,7 +6,7 @@
    2. Drop-downs (desktop) & mobile menu card (focus trap, Escape)
    3. Scroll spy (current group marked with a red dot)
    4. Scroll reveal (fade + 16px, staggered via --i)
-   4b. Mission (words drop in, scrubbed to the scroll)
+   4b. Titles (words drop in, scrubbed to the scroll)
    5. Photo strip (pause / play button, pause when off-screen)
    6. YouTube facade (youtube-nocookie player on click, one video at a time)
    7. Mobile storytelling reel (prev / next, counter, progress, pointer tilt)
@@ -232,77 +232,105 @@
   reduceMotion.addEventListener('change', function (mq) { if (mq.matches) showAll(); });
 
 
-  /* 4b. MISSION — WORDS DROP IN WITH THE SCROLL -------------------------- */
-  // Each word comes down from -100% and fades in, staggered, scrubbed to the
-  // scroll: starts when the text is half into the viewport, ends when its
-  // bottom reaches the middle. Progress eases towards the scroll (≈0.8s lag).
-  // Without JS or with reduced motion the four lines simply show in full.
-  var missionText = document.querySelector('.mission__text');
-  if (missionText) {
-    var mission = missionText.closest('.mission');
-    var words = [];
-    each(missionText.querySelectorAll('.mission__line'), function (line) {
-      var parts = line.textContent.trim().split(/\s+/);
-      line.textContent = '';
-      parts.forEach(function (part, i) {
-        if (i) line.appendChild(document.createTextNode(' '));
+  /* 4b. TITLES — WORDS DROP IN WITH THE SCROLL --------------------------- */
+  // Applies to the h1, every section h2 (not the small .label ones) and the
+  // mission statement. Each word comes down from -100% and fades in,
+  // staggered, scrubbed to the scroll: starts when the title is half into the
+  // viewport, ends when its bottom reaches the middle. The h1 plays on load.
+  // Progress eases towards the scroll (≈0.8s lag). Inner markup is kept.
+  // Without JS or with reduced motion the titles simply show in full.
+  var SPLIT_SELECTOR = 'h1, h2:not(.label), .mission__text';
+  var DUR = 0.5, STAGGER = 0.4, TOTAL = DUR + STAGGER;
+
+  function splitWords(node, words) {
+    Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+      if (child.nodeType === 1) { splitWords(child, words); return; }
+      if (child.nodeType !== 3 || !child.nodeValue.trim()) return;
+      var frag = document.createDocumentFragment();
+      child.nodeValue.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
         var word = document.createElement('span');
-        word.className = 'mission__word';
+        word.className = 'split-word';
         word.textContent = part;
-        line.appendChild(word);
+        frag.appendChild(word);
         words.push(word);
       });
+      child.replaceWith(frag);
     });
+    return words;
+  }
 
-    var DUR = 0.5, STAGGER = 0.4, TOTAL = DUR + STAGGER;
-    var shown = 0, target = 0, lastTime = 0, running = false;
+  var splits = Array.prototype.map.call(document.querySelectorAll(SPLIT_SELECTOR), function (el) {
+    return { el: el, words: splitWords(el, []), onLoad: el.tagName === 'H1', shown: 0, target: 0 };
+  });
 
-    var missionTarget = function () {
-      var r = missionText.getBoundingClientRect();
+  if (splits.length) {
+    var splitRunning = false, splitLast = 0;
+
+    var splitTarget = function (s) {
+      if (s.onLoad) return 1;
+      var r = s.el.getBoundingClientRect();
       var vh = window.innerHeight;
-      var startTop = vh - r.height / 2;    // text half into view
-      var endTop = vh / 2 - r.height;      // text bottom at mid-screen
+      // Page bottom reached: titles that can't get to mid-screen finish anyway
+      if (r.top < vh && vh + window.scrollY >= document.documentElement.scrollHeight - 4) return 1;
+      var startTop = vh - r.height / 2;    // title half into view
+      var endTop = vh / 2 - r.height;      // title bottom at mid-screen
       return Math.max(0, Math.min(1, (startTop - r.top) / (startTop - endTop)));
     };
 
-    var paintWords = function () {
-      var t = shown * TOTAL;
-      words.forEach(function (word, i) {
-        var start = words.length > 1 ? (i / (words.length - 1)) * STAGGER : 0;
+    var paintSplit = function (s) {
+      var t = s.shown * TOTAL;
+      var n = s.words.length;
+      s.words.forEach(function (word, i) {
+        var start = n > 1 ? (i / (n - 1)) * STAGGER : 0;
         var k = Math.max(0, Math.min(1, (t - start) / DUR));
         word.style.setProperty('--w', (1 - Math.pow(1 - k, 3)).toFixed(3));
       });
     };
 
-    var stepMission = function (now) {
-      var dt = Math.min(0.1, (now - (lastTime || now)) / 1000);
-      lastTime = now;
-      shown += (target - shown) * (1 - Math.exp(-dt / 0.2));
-      if (Math.abs(target - shown) < 0.001) shown = target;
-      paintWords();
-      if (shown !== target) window.requestAnimationFrame(stepMission);
-      else { running = false; lastTime = 0; }
+    var stepSplits = function (now) {
+      var dt = Math.min(0.1, (now - (splitLast || now)) / 1000);
+      var moving = false;
+      splitLast = now;
+      splits.forEach(function (s) {
+        if (s.shown === s.target) return;
+        s.shown += (s.target - s.shown) * (1 - Math.exp(-dt / 0.2));
+        if (Math.abs(s.target - s.shown) < 0.001) s.shown = s.target;
+        paintSplit(s);
+        if (s.shown !== s.target) moving = true;
+      });
+      if (moving) window.requestAnimationFrame(stepSplits);
+      else { splitRunning = false; splitLast = 0; }
     };
 
-    var onMissionScroll = function () {
-      if (!mission.classList.contains('is-scrubbed')) return;
-      target = missionTarget();
-      if (!running && target !== shown) {
-        running = true;
-        window.requestAnimationFrame(stepMission);
+    var onSplitScroll = function () {
+      if (reduceMotion.matches) return;
+      var changed = false;
+      splits.forEach(function (s) {
+        s.target = splitTarget(s);
+        if (s.target !== s.shown) changed = true;
+      });
+      if (changed && !splitRunning) {
+        splitRunning = true;
+        window.requestAnimationFrame(stepSplits);
       }
     };
 
-    var setMissionMode = function () {
+    var setSplitMode = function () {
       var on = !reduceMotion.matches;
-      mission.classList.toggle('is-scrubbed', on);
-      if (on) { shown = target = missionTarget(); paintWords(); }
+      splits.forEach(function (s) {
+        s.el.classList.toggle('is-scrubbed', on);
+        s.shown = 0;
+        paintSplit(s);
+      });
+      onSplitScroll();
     };
 
-    window.addEventListener('scroll', onMissionScroll, { passive: true });
-    window.addEventListener('resize', onMissionScroll, { passive: true });
-    reduceMotion.addEventListener('change', setMissionMode);
-    setMissionMode();
+    window.addEventListener('scroll', onSplitScroll, { passive: true });
+    window.addEventListener('resize', onSplitScroll, { passive: true });
+    reduceMotion.addEventListener('change', setSplitMode);
+    setSplitMode();
   }
 
 
