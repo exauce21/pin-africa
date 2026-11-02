@@ -7,7 +7,8 @@
    3. Scroll spy (current group marked with a red dot)
    4. Scroll reveal (fade + 16px, staggered via --i)
    4b. Titles (words drop in, scrubbed to the scroll)
-   5. Photo strip (pause / play button, pause when off-screen)
+   5. Hero map (photos & value pills pop up on random dots, pause / play)
+   5b. Featured campaign (sticky photos follow the two parts of the story)
    6. YouTube facade (youtube-nocookie player on click, one video at a time)
    7. Mobile storytelling reel (prev / next, counter, progress, pointer tilt)
    8. About — falling value pills (Matter.js physics, loaded on demand)
@@ -334,20 +335,190 @@
   }
 
 
-  /* 5. PHOTO STRIP -------------------------------------------------------- */
-  var strip = document.querySelector('.strip');
-  if (strip) {
-    var stripBtn = strip.querySelector('.strip__toggle');
-    var stripText = strip.querySelector('.strip__toggle-text');
-    stripBtn.addEventListener('click', function () {
-      var paused = strip.classList.toggle('is-paused');
-      stripText.textContent = paused ? 'Play' : 'Pause';
+  /* 5. HERO MAP — PHOTOS & VALUES POP UP ON RANDOM DOTS ------------------ */
+  // Every ~1.2s a hidden item (photo or value pill) appears on a random dot
+  // of the map, stays ~5s, then goes. Items never overlap and stay inside
+  // the map. Optional pause / play button; also pauses off-screen or in a
+  // hidden tab.
+  // Without JS or with reduced motion the items marked .is-on stay still.
+  var map = document.querySelector('[data-map]');
+  if (map && !reduceMotion.matches) {
+    var mapLayer = map.querySelector('.hero-map__layer');
+    var mapBtn = map.querySelector('.hero-map__toggle');
+    var mapBtnText = map.querySelector('.hero-map__toggle-text');
+    var box = map.querySelector('.hero-map__dots').viewBox.baseVal;
+    var anchors = Array.prototype.map.call(
+      map.querySelectorAll('.hero-map__dots circle:not(.is-isle)'),
+      function (dot) {
+        return { x: (dot.cx.baseVal.value / box.width) * 100, y: (dot.cy.baseVal.value / box.height) * 100 };
+      }
+    );
+    var mapItems = Array.prototype.map.call(mapLayer.children, function (el) {
+      return { el: el, body: el.querySelector('.map-item__body'), photo: !!el.querySelector('.map-photo'), life: 0, rect: null };
     });
+
+    var TICK = 250, STEM = 16, GAP = 10;
+    var active = [];                     // items shown (or fading out)
+    var nextSpawn = 1200;
+
+    // The still items from the markup stay a moment, then leave one by one
+    var layerBox = mapLayer.getBoundingClientRect();
+    mapItems.forEach(function (item) {
+      if (!item.el.classList.contains('is-on')) return;
+      var b = item.body.getBoundingClientRect();
+      var pin = item.el.getBoundingClientRect();
+      item.rect = {
+        l: Math.min(b.left, pin.left - 7) - layerBox.left, r: Math.max(b.right, pin.left + 7) - layerBox.left,
+        t: Math.min(b.top, pin.top - 7) - layerBox.top, b: Math.max(b.bottom, pin.top + 7) - layerBox.top
+      };
+      item.life = 1800 + active.length * 900;
+      active.push(item);
+    });
+    var userPaused = false, offscreen = false;
+
+    var overlaps = function (r) {
+      return active.some(function (it) {
+        var o = it.rect;
+        return r.l < o.r + GAP && r.r > o.l - GAP && r.t < o.b + GAP && r.b > o.t - GAP;
+      });
+    };
+
+    // Try random dots until the item fits inside the map without overlapping
+    var placeItem = function (item) {
+      var W = mapLayer.clientWidth, H = mapLayer.clientHeight;
+      var w = item.body.offsetWidth, h = item.body.offsetHeight;
+      for (var tries = 0; tries < 40; tries++) {
+        var a = anchors[Math.floor(Math.random() * anchors.length)];
+        var px = (a.x / 100) * W, py = (a.y / 100) * H;
+        var fitsAbove = py - STEM - h >= 0, fitsBelow = py + STEM + h <= H;
+        if (!fitsAbove && !fitsBelow) continue;
+        var below = fitsAbove && fitsBelow ? Math.random() < 0.3 : !fitsAbove;
+        var dx = Math.max(0, w / 2 - px) - Math.max(0, px + w / 2 - W);
+        var rect = {
+          l: Math.min(px - 7, px - w / 2 + dx), r: Math.max(px + 7, px + w / 2 + dx),
+          t: below ? py - 7 : py - STEM - h, b: below ? py + STEM + h : py + 7
+        };
+        if (overlaps(rect)) continue;
+        item.el.style.setProperty('--x', a.x.toFixed(2));
+        item.el.style.setProperty('--y', a.y.toFixed(2));
+        item.el.style.setProperty('--dx', dx.toFixed(1) + 'px');
+        item.el.classList.toggle('is-below', below);
+        item.rect = rect;
+        return true;
+      }
+      return false;
+    };
+
+    var spawn = function () {
+      var max = mapLayer.clientWidth < 480 ? 3 : 5;
+      if (active.length >= max) return;
+      var photosOn = active.filter(function (it) { return it.photo; }).length;
+      var pool = mapItems.filter(function (it) {
+        return active.indexOf(it) < 0 && (!it.photo || photosOn < 2);
+      });
+      if (!pool.length) return;
+      var item = pool[Math.floor(Math.random() * pool.length)];
+      if (!placeItem(item)) return;
+      item.life = 4200 + Math.random() * 1800;
+      active.push(item);
+      item.el.classList.add('is-on');
+    };
+
+    var mapTick = function () {
+      if (userPaused || offscreen || document.hidden) return;
+      active.slice().forEach(function (item) {
+        item.life -= TICK;
+        if (item.life <= 0 && item.el.classList.contains('is-on')) item.el.classList.remove('is-on');
+        if (item.life <= -700) active.splice(active.indexOf(item), 1);   // space freed once faded
+      });
+      nextSpawn -= TICK;
+      if (nextSpawn <= 0) { spawn(); nextSpawn = 900 + Math.random() * 700; }
+    };
+    window.setInterval(mapTick, TICK);
+
+    if (mapBtn) {
+      mapBtn.addEventListener('click', function () {
+        userPaused = map.classList.toggle('is-paused');
+        mapBtnText.textContent = userPaused ? 'Play' : 'Pause';
+      });
+    }
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
-        strip.classList.toggle('is-offscreen', !entries[0].isIntersecting);
-      }).observe(strip);
+        offscreen = !entries[0].isIntersecting;
+      }).observe(map);
     }
+    // A new width can push shown items off the map: start afresh
+    // (height-only resizes, e.g. the mobile URL bar, are ignored)
+    var mapWidth = mapLayer.clientWidth;
+    window.addEventListener('resize', function () {
+      if (mapLayer.clientWidth === mapWidth) return;
+      mapWidth = mapLayer.clientWidth;
+      active.forEach(function (item) { item.el.classList.remove('is-on'); });
+      active = [];
+      nextSpawn = 400;
+    }, { passive: true });
+  }
+
+
+  /* 5b. FEATURED CAMPAIGN — PHOTOS FOLLOW THE STORY --------------------- */
+  // Desktop only (the sticky photo column is hidden below 960px). As part 2
+  // rises from 85% to 40% of the viewport, --t goes 0 → 1: the second photo
+  // wipes up and both zoom. Counter, caption and step buttons follow; the
+  // buttons scroll to their part. Pointer parallax with a fine pointer.
+  // With reduced motion the photos simply switch halfway.
+  var campaign = document.querySelector('[data-campaign]');
+  if (campaign) {
+    var cMedia = campaign.querySelector('.campaign__media');
+    var cFrame = campaign.querySelector('.campaign__frame');
+    var cParts = campaign.querySelectorAll('[data-campaign-part]');
+    var cSteps = campaign.querySelectorAll('[data-campaign-go]');
+    var cCurrent = campaign.querySelector('[data-campaign-current]');
+    var cCaption = campaign.querySelector('[data-campaign-caption]');
+    var cIndex = -1, cTick = false;
+
+    var updateCampaign = function () {
+      cTick = false;
+      if (!cMedia.offsetParent || cParts.length < 2) return;
+      var vh = window.innerHeight;
+      var top = cParts[1].getBoundingClientRect().top;
+      var t = Math.max(0, Math.min(1, (vh * 0.85 - top) / (vh * 0.45)));
+      if (reduceMotion.matches) t = t >= 0.5 ? 1 : 0;
+      cFrame.style.setProperty('--t', t.toFixed(3));
+
+      var index = t >= 0.5 ? 1 : 0;
+      if (index === cIndex) return;
+      cIndex = index;
+      cCurrent.textContent = String(index + 1).padStart(2, '0');
+      cCaption.textContent = cParts[index].getAttribute('data-caption');
+      each(cSteps, function (btn, i) { btn.classList.toggle('is-active', i === index); });
+    };
+
+    each(cSteps, function (btn) {
+      btn.addEventListener('click', function () {
+        var part = cParts[+btn.getAttribute('data-campaign-go')];
+        if (part) part.scrollIntoView({ block: 'start', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      });
+    });
+
+    window.addEventListener('scroll', function () {
+      if (cTick) return;
+      cTick = true;
+      window.requestAnimationFrame(updateCampaign);
+    }, { passive: true });
+    window.addEventListener('resize', updateCampaign, { passive: true });
+    updateCampaign();
+
+    var cFine = window.matchMedia('(hover: hover) and (pointer: fine)');
+    cFrame.addEventListener('pointermove', function (e) {
+      if (!cFine.matches || reduceMotion.matches) return;
+      var r = cFrame.getBoundingClientRect();
+      cFrame.style.setProperty('--px', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+      cFrame.style.setProperty('--py', ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+    });
+    cFrame.addEventListener('pointerleave', function () {
+      cFrame.style.removeProperty('--px');
+      cFrame.style.removeProperty('--py');
+    });
   }
 
 

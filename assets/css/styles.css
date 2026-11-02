@@ -12,7 +12,7 @@
    06. Buttons, CTAs, chips, tags
    07. Cards & photos
    08. Header & mobile menu
-   09. Hero & photo strip
+   09. Hero & map of Africa
    10. About Pin Africa — falling value pills
    11. Who we were
    12. Our mission
@@ -58,7 +58,7 @@
   --fs-h1: clamp(2.5rem, 1.6rem + 3.8vw, 4.5rem); /* 40 → 72px       */
   --fs-h2: clamp(2.25rem, 1.8rem + 1.6vw, 3.25rem); /* 36 → 52px       */
   --fs-story: clamp(1.5rem, 1.25rem + 0.9vw, 2rem); /* 24 → 32px       */
-  --fs-lead: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); /* 20 → 24px       */
+  --fs-lead: clamp(1.20rem, 1.1rem + 0.6vw, 1rem); /* 20 → 24px       */
   --fs-label: 1rem; /* 16px            */
   --fs-label-sm: 15px;          
   --tracking-label: 0.06em;
@@ -1182,12 +1182,16 @@ body.menu-open {
   overflow: hidden;
 }
 
-/* 09. HERO & PHOTO STRIP =================================================== */
-/* Dark rounded panel sitting under the tab; the photo strip runs along its bottom */
+/* 09. HERO & MAP OF AFRICA ================================================= */
+/* Dark rounded panel sitting under the tab: text on the left, dotted map of
+   Africa on the right (stacked, centred, below 960px) */
 .hero {
+  display: grid;
+  align-items: center;
   min-height: calc(100vh - 2 * var(--panel-m));
   min-height: calc(100svh - 2 * var(--panel-m));
   padding-top: calc(var(--header-h) + clamp(36px, 4.5vw, 72px));
+  padding-bottom: clamp(48px, 6vw, 88px);
   text-align: center;
   background:
     radial-gradient(
@@ -1198,8 +1202,25 @@ body.menu-open {
     var(--ink);
 }
 .hero__inner {
-  max-width: 1240px;
-  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(40px, 5vw, 72px);
+  align-items: center;
+}
+@media (min-width: 960px) {
+  .hero {
+    text-align: left;
+  }
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
+  .hero .hero__intro,
+  .hero .status__text {
+    margin-inline: 0;
+  }
+  .hero .hero__actions {
+    justify-content: flex-start;
+  }
 }
 .hero__badge {
   display: inline-flex;
@@ -1223,7 +1244,7 @@ body.menu-open {
   background: var(--red);
 }
 .hero h1 {
-  font-size: clamp(2.75rem, 1.4rem + 5.6vw, 6rem);
+  font-size: clamp(2.75rem, 1.6rem + 3.6vw, 5rem);
   line-height: 0.98;
   margin-bottom: 22px;
 }
@@ -1235,9 +1256,6 @@ body.menu-open {
   max-width: 680px;
   margin-inline: auto;
   font-size: 1.125rem;
-}
-.hero .strip {
-  margin-top: clamp(40px, 4.5vw, 64px);
 }
 .hero .status {
   margin-top: 28px;
@@ -1303,74 +1321,172 @@ body.menu-open {
   margin-top: 32px;
 }
 
-.strip {
-  --strip-scale: 0.68;
-  --strip-gap: 16px;
+/* Dotted map: 511 dots in an SVG; a layer on top holds the photos and value
+   pills. Each .map-item sits on a dot (--x / --y in % of the map) and its
+   body pops up above it (or below with .is-below), shifted by --dx to stay
+   inside the map. main.js picks the items and dots at random. */
+.hero-map {
   position: relative;
-  margin-top: clamp(48px, 7vw, 88px);
-  padding-bottom: clamp(56px, 8vw, 96px);
+  isolation: isolate;
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
 }
-@media (min-width: 768px) {
-  .strip {
-    --strip-scale: 1;
-    --strip-gap: 20px;
-  }
-}
-.strip__viewport {
+.hero__text {
   position: relative;
-  overflow: hidden;
-  padding-block: 8px 12px;
+  z-index: 1;                          /* above the faint world map */
 }
-.strip__track {
-  display: flex;
-  width: max-content;
-  animation: marquee 80s linear infinite;
+/* Rest of the world: same 10-unit grid as the Africa SVG (viewBox
+   -680 -210 1610 610 vs 0 0 390 310), so it lines up at every size.
+   Percentages are of the map width (margin-top % is too). The hero
+   panel clips what goes past its edges. */
+.hero-map__world {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: -174.359%;
+  width: 412.821%;
+  max-width: none;
+  height: auto;
+  margin-top: -53.846%;
+  opacity: 0.03;
+  pointer-events: none;
+  user-select: none;
 }
-.strip__group {
-  display: flex;
-  align-items: center;
-  gap: var(--strip-gap);
-  padding-right: var(--strip-gap);
+.hero-map__dots {
+  display: block;
+  width: 100%;
+  height: auto;
+  fill: var(--teal-10);
 }
-.strip__viewport:hover .strip__track,
-.strip__viewport:focus .strip__track,
-.strip.is-paused .strip__track,
-.strip.is-offscreen .strip__track {
-  animation-play-state: paused;
+.hero-map__dots .is-isle {
+  opacity: 0.7;
 }
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
+.hero-map__layer {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
 }
 
-.strip__item {
-  position: relative;
-  flex: none;
-  width: calc(var(--w) * var(--strip-scale));
-  height: calc(var(--h) * var(--strip-scale));
-  overflow: hidden;
-  border-radius: var(--r-media);
-  background: var(--teal-10);
+.map-item {
+  position: absolute;
+  left: calc(var(--x, 50) * 1%);
+  top: calc(var(--y, 50) * 1%);
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  transition: visibility 0s linear 0.6s;
 }
-.strip__item img {
+.map-item.is-on {
+  z-index: 2;
+  visibility: visible;
+  transition-delay: 0s;
+}
+/* The dot lights up red with a ring… */
+.map-item::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 5px rgb(231 87 75 / 0.3);
+  scale: 0;
+  transition: scale 0.4s var(--ease);
+}
+/* …and a short stem joins it to the card */
+.map-item::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  bottom: 0;
+  width: 2px;
+  height: 16px;
+  background: var(--white);
+  transform-origin: bottom;
+  scale: 1 0;
+  transition: scale 0.3s var(--ease);
+}
+.map-item.is-below::after {
+  top: 0;
+  bottom: auto;
+  transform-origin: top;
+}
+.map-item.is-on::before {
+  scale: 1;
+}
+.map-item.is-on::after {
+  scale: 1 1;
+  transition-delay: 0.1s;
+}
+.map-item__body {
+  position: absolute;
+  left: 0;
+  bottom: 16px;
+  translate: calc(-50% + var(--dx, 0px)) 0;
+  transform-origin: calc(50% - var(--dx, 0px)) 100%;
+  opacity: 0;
+  scale: 0.6;
+  transition:
+    opacity 0.45s var(--ease),
+    scale 0.55s var(--ease);
+}
+.map-item.is-below .map-item__body {
+  top: 16px;
+  bottom: auto;
+  transform-origin: calc(50% - var(--dx, 0px)) 0;
+}
+.map-item.is-on .map-item__body {
+  opacity: 1;
+  scale: 1;
+  transition-delay: 0.15s;
+}
+
+.map-photo {
+  width: clamp(112px, 12vw, 172px);
+  aspect-ratio: var(--ar, 4 / 5);
+  overflow: hidden;
+  border: 3px solid var(--white);
+  border-radius: 18px;
+  background: var(--teal-10);
+  box-shadow: var(--shadow-lift);
+}
+.map-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-@media (max-width: 767px) {
-  .strip .chip-stack {
-    left: 8px;
-    bottom: 8px;
-    transform: scale(0.88);
-    transform-origin: left bottom;
-  }
+.map-photo .chip {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  min-height: 0;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  white-space: normal;
+}
+.map-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.38em 0.9em 0.38em 0.38em;
+  border-radius: var(--r-pill);
+  font: 700 clamp(0.9375rem, 0.8rem + 0.45vw, 1.25rem) / 1 var(--font-display);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  box-shadow: var(--shadow-chip);
 }
 
-.strip__toggle {
+.hero-map__toggle {
   position: absolute;
-  right: var(--edge);
-  bottom: clamp(8px, 2vw, 32px);
+  right: 0;
+  bottom: 0;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1384,7 +1500,7 @@ body.menu-open {
   text-transform: uppercase;
   cursor: pointer;
 }
-.strip__toggle-icon {
+.hero-map__toggle-icon {
   display: grid;
   place-items: center;
   width: 30px;
@@ -1392,17 +1508,21 @@ body.menu-open {
   border-radius: 50%;
   background: var(--teal-20);
 }
-.strip__toggle .icon {
+.hero-map__toggle .icon {
   width: 14px;
   height: 14px;
 }
-.strip__toggle .icon-play {
+.hero-map__toggle .icon-play {
   display: none;
 }
-.strip.is-paused .strip__toggle .icon-play {
+.hero-map.is-paused .hero-map__toggle .icon-play {
   display: block;
 }
-.strip.is-paused .strip__toggle .icon-pause {
+.hero-map.is-paused .hero-map__toggle .icon-pause {
+  display: none;
+}
+/* No JS: the still items stay, the button has nothing to do */
+html:not(.js) .hero-map__toggle {
   display: none;
 }
 
@@ -1684,6 +1804,15 @@ body.menu-open {
   font-size: 1.125rem;
   margin: 0;
 }
+.work.panel {
+  margin-bottom: 0;
+  border-radius: var(--r-panel) var(--r-panel) 0 0;
+}
+.work.panel + .campaign {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 
 .work-index {
   display: grid;
@@ -1704,23 +1833,15 @@ body.menu-open {
 @media (min-width: 1100px) {
   .work-index {
     grid-auto-flow: row;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-auto-rows: clamp(220px, 19vw, 300px);
     overflow: visible;
     margin-inline: 0;
     padding: 0;
   }
-  .work-index > li:first-child {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
   .work-index .work-tile {
     aspect-ratio: auto;
     height: 100%;
-  }
-  .work-index > li:first-child .work-tile__label {
-    padding: 14px 22px;
-    font-size: var(--fs-label);
   }
 }
 .work-index > li {
@@ -1799,59 +1920,175 @@ body.menu-open {
 }
 
 /* 15. FEATURED CAMPAIGN ==================================================== */
-.campaign-hero {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  min-height: calc(100vh - var(--header-h) - 2 * var(--panel-m));
-  min-height: calc(100svh - var(--header-h) - 2 * var(--panel-m));
-  color: var(--white);
-  --focus: var(--white);
-  isolation: isolate;
+/* Dark panel, two columns from 960px: the event photos stick on the left
+   (frame + two step buttons) while the story scrolls on the right in two
+   parts. main.js sets --t (0 → 1) on the frame as part 2 comes up: the
+   second photo wipes up from the bottom while both zoom; --px / --py add
+   a light pointer parallax. Below 960px each part shows its photo inline. */
+.campaign {
+  padding-block: var(--section-y);
 }
-.campaign-hero__media,
-.campaign-hero__media img {
+.campaign__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(40px, 5vw, 96px);
+}
+.campaign__media {
+  display: none;
+}
+.campaign__part + .campaign__part {
+  margin-top: clamp(40px, 5vw, 40px);
+}
+.campaign__inline {
+  margin: 0 0 28px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-media);
+  background: rgb(255 255 255 / 0.06);
+}
+.campaign__inline img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (min-width: 960px) {
+  .campaign__grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  .campaign__media {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: calc(100vh - var(--header-h) - 48px);
+    height: calc(100svh - var(--header-h) - 48px);
+  }
+  .campaign__inline {
+    display: none;
+  }
+  /* The last part is at least a screen tall, so photo 2 stays a while */
+  .campaign__part:last-child {
+    min-height: calc(100vh - var(--header-h) - 48px);
+    min-height: calc(100svh - var(--header-h) - 48px);
+  }
+}
+
+.campaign__frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--r-media);
+  background: rgb(255 255 255 / 0.06);
+}
+.campaign__img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  margin: 0;
   object-fit: cover;
-  z-index: -2;
+  scale: calc(1.06 + var(--t, 0) * 0.06);
+  translate: calc(var(--px, 0) * -14px) calc(var(--py, 0) * -14px);
+  transition: translate 0.6s var(--ease);
 }
-.campaign-hero::after {
-  content: "";
+.campaign__img--next {
+  clip-path: inset(calc((1 - var(--t, 0)) * 100%) 0 0 0 round var(--r-media));
+  scale: calc(1.2 - var(--t, 0) * 0.14);
+}
+.campaign__caption {
   position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(to top, rgb(0 30 28 / 0.6) 0%, rgb(0 30 28 / 0) 60%),
-    var(--veil);
+  left: 16px;
+  bottom: 16px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px 6px 6px;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  color: var(--ink);
+  font: 500 0.875rem / 1.2 var(--font-sans);
+  box-shadow: var(--shadow-chip);
 }
-.campaign-hero__content {
+.campaign__count {
+  padding: 6px 10px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--white);
+  font: 700 var(--fs-label-sm) / 1 var(--font-display);
+  letter-spacing: var(--tracking-label);
+}
+.campaign__steps {
   display: grid;
-  gap: clamp(32px, 4vw, 56px);
-  align-items: end;
-  padding-block: 120px clamp(48px, 6vw, 88px);
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
-@media (min-width: 1000px) {
-  .campaign-hero__content {
-    grid-template-columns: 1.4fr 1fr;
-  }
+.campaign__steps button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1.5px solid rgb(255 255 255 / 0.3);
+  border-radius: var(--r-pill);
+  background: none;
+  color: var(--white);
+  font: 700 var(--fs-label-sm) / 1 var(--font-display);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    color 0.3s,
+    border-color 0.3s;
 }
-.campaign-hero .eyebrow {
-  margin-bottom: 20px;
+.campaign__steps button:hover {
+  border-color: var(--white);
 }
-.campaign-hero h2 {
-  font-size: clamp(2.75rem, 1.6rem + 4.8vw, 5.5rem);
+.campaign__steps button.is-active {
+  border-color: var(--white);
+  background: var(--white);
+  color: var(--ink);
+}
+
+.campaign h2 {
+  font-size: clamp(2.75rem, 1.8rem + 3.2vw, 4.75rem);
   line-height: 1;
   margin-bottom: 18px;
 }
-.campaign-hero__byline {
-  margin: 0;
+.campaign__byline {
+  margin: 0 0 clamp(28px, 3vw, 40px);
   font-size: var(--fs-lead);
   font-style: italic;
-  max-width: 760px;
+  color: rgb(255 255 255 / 0.85);
+}
+.campaign .figures {
+  margin-bottom: clamp(28px, 3vw, 40px);
+}
+.campaign .figure__num {
+  font-size: clamp(2.5rem, 2rem + 2.4vw, 4.5rem);
+}
+.campaign .figure {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-top: 0;
+  border-top: 0;
+}
+.campaign .figure__label {
+  margin-top: 0;
+  font: 500 1rem / 1.35 var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.campaign .prose p {
+  color: rgb(255 255 255 / 0.85);
+}
+.campaign .prose .campaign__lead {
+  font: 700 var(--fs-lead) / 1.35 var(--font-sans);
+  color: var(--white);
+}
+.campaign .note {
+  margin-top: 24px;
+  color: rgb(255 255 255 / 0.7);
 }
 
 /* Key figures, right next to the title block */
@@ -1877,26 +2114,6 @@ body.menu-open {
   max-width: 22ch;
 }
 
-.campaign-body {
-  padding-block: clamp(56px, 7vw, 96px) var(--section-y);
-}
-.campaign-body__lead {
-  max-width: 760px;
-  margin: 0 0 28px;
-  font: 700 var(--fs-lead) / 1.35 var(--font-sans);
-}
-.two-col {
-  margin-bottom: 28px;
-}
-@media (min-width: 900px) {
-  .two-col {
-    columns: 2;
-    column-gap: 64px;
-  }
-  .two-col p {
-    break-inside: avoid;
-  }
-}
 .note {
   margin: 0 0 28px;
   font-style: italic;
@@ -1922,6 +2139,7 @@ body.menu-open {
   font-weight: 500;
   border-radius: 50px;
   background: var(--teal-10);
+  color: var(--ink);
   text-decoration: none;
   text-transform: none;
   transition:
@@ -1942,11 +2160,6 @@ body.menu-open {
 }
 .campaign-resources .cta__icon {
   align-self: center;
-}
-@media (min-width: 760px) {
-  .campaign-resources {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 /* 16. VIDEO (ONE ROW) ====================================================== */
@@ -2837,23 +3050,7 @@ body.menu-open {
   .status-pill__dot::after {
     display: none;
   }
-  .strip__track {
-    animation: none;
-  }
-  .strip__viewport {
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-  }
-  .strip__item {
-    scroll-snap-align: start;
-  }
-  .strip__group[aria-hidden="true"] {
-    display: none;
-  }
-  .strip__group {
-    padding-left: var(--gutter);
-  }
-  .strip__toggle {
+  .hero-map__toggle {
     display: none;
   }
   .card--lift:hover,
