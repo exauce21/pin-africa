@@ -32,10 +32,10 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-  <!-- Fonts: Sofia (display, labels — Sofia Pro if installed, else Sofia Sans) + Rubik (text) -->
+  <!-- Fonts: Rubik (headings and labels) + Roboto (body text) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,700;1,400&family=Sofia+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&family=Rubik:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
 
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/fa-brands.css">
@@ -329,26 +329,6 @@
     </div>
   </section>
 
-
-  <!-- ===================================================================
-       2. ABOUT PIN AFRICA (#about) — white; the five values fall as pills,
-       pile up, react to the pointer (drag with a mouse, tap on touch).
-       The first five pills are the real list; main.js adds coloured copies.
-       =================================================================== -->
-  <section class="about-intro" id="about" aria-labelledby="about-title">
-    <div class="container">
-      <h2 id="about-title" data-reveal>About Pin Africa</h2>
-    </div>
-    <ul class="pile" role="list" aria-label="Our values" data-pile>
-      <li class="pile__pill pill--teal"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Integrity</li>
-      <li class="pile__pill pill--red"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Dignity</li>
-      <li class="pile__pill pill--ink"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>African agency</li>
-      <li class="pile__pill pill--mist"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Creativity</li>
-      <li class="pile__pill pill--blush"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Public interest</li>
-    </ul>
-  </section>
-
-
   <!-- ===================================================================
        3. WHO WE WERE — teal-10 panel with a photo
        [PLACEHOLDER] about-01.jpg (portrait 4:5)
@@ -396,7 +376,7 @@
   <!-- ===================================================================
        5. OUR VALUES — white; one colour per value (same as the pills)
        =================================================================== -->
-  <section class="section" id="values" aria-labelledby="values-title">
+  <section class="section values" id="values" aria-labelledby="values-title">
     <div class="container">
       <div class="section-head" data-reveal>
         <h2 id="values-title">Our values</h2>
@@ -410,6 +390,21 @@
       </ul>
     </div>
   </section>
+  <!-- ===================================================================
+       2. ABOUT PIN AFRICA (#about) — white; the five values fall as pills,
+       pile up, react to the pointer (drag with a mouse, tap on touch).
+       The first five pills are the real list; main.js adds coloured copies.
+       =================================================================== -->
+  <section class="about-intro" id="about" aria-labelledby="about-title">
+    <ul class="pile" role="list" aria-label="Our values" data-pile>
+      <li class="pile__pill pill--teal"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Integrity</li>
+      <li class="pile__pill pill--red"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Dignity</li>
+      <li class="pile__pill pill--ink"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>African agency</li>
+      <li class="pile__pill pill--mist"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Creativity</li>
+      <li class="pile__pill pill--blush"><span class="pile__check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>Public interest</li>
+    </ul>
+  </section>
+
 
 
   <!-- ===================================================================

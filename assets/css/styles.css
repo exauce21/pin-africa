@@ -49,9 +49,9 @@
 
   --veil: rgb(0 30 28 / 0.6);          /* --ink at 60 % over photos */
 
-  /* Typography: Sofia (display, labels, buttons) + Rubik (text) */
-  --font-display: "Sofia Pro", "Sofia Sans", "Rubik", system-ui, sans-serif;
-  --font-sans:    "Rubik", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* Typography: Rubik for headings and labels, Roboto for body text */
+  --font-display: "Rubik", system-ui, sans-serif;
+  --font-sans:    "Roboto", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
 
   --fs-body:  1.0625rem;                                   /* 17px            */
   --lh-body:  1.6;
@@ -858,7 +858,8 @@ body.menu-open { overflow: hidden; }
 /* Without JS (or with reduced motion) the pills sit as a still pile.
    main.js turns them into physics bodies (Matter.js): they fall, stack,
    get pushed away by the pointer, can be dragged (mouse) or tapped (touch). */
-.about-intro { padding-block: var(--section-y) clamp(32px, 5vw, 72px); text-align: center; }
+.about-intro { padding-block: 0 clamp(32px, 5vw, 72px); text-align: center; }
+.pile:first-child { margin-top: 0; }                    /* no title above the pile */
 .about-intro h2 { font-size: clamp(2.75rem, 1.6rem + 4.6vw, 6rem); letter-spacing: -0.03em; }
 
 .pile {
@@ -870,7 +871,6 @@ body.menu-open { overflow: hidden; }
   gap: 12px 10px;
   margin: clamp(24px, 3vw, 40px) auto 0;
   padding: 40px var(--gutter) 24px;
-  border-bottom: 2px solid var(--teal-20);
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-y;
@@ -878,12 +878,12 @@ body.menu-open { overflow: hidden; }
 /* With JS + motion, the pit keeps its final height from the start (no layout
    shift) and pills stay hidden until they drop in. */
 @media (prefers-reduced-motion: no-preference) {
-  .js .pile { height: clamp(360px, 36vw, 560px); }
+  .js .pile { height: clamp(260px, 22vw, 340px); }
   .js .pile:not(.is-live):not(.is-static) .pile__pill { visibility: hidden; }
 }
 .pile.is-live {
   display: block;
-  height: clamp(360px, 36vw, 560px);
+  height: clamp(260px, 22vw, 340px);
   padding: 0;
   overflow-x: clip;          /* pills may fall in across the title, never past the sides */
   overflow-y: visible;
@@ -945,8 +945,7 @@ body.menu-open { overflow: hidden; }
 /* 11. WHO WE WERE ========================================================== */
 .who { display: grid; gap: clamp(32px, 5vw, 80px); align-items: center; }
 @media (min-width: 900px) { .who { grid-template-columns: 5fr 6fr; } }
-.who__photo { aspect-ratio: 4 / 5; max-height: 760px; }
-@media (max-width: 899px) { .who__photo { aspect-ratio: 4 / 3; } }
+.who__photo { aspect-ratio: 1 / 1; max-height: 760px; }
 .who__kicker {
   margin: 0 0 8px;
   font: var(--w-display) clamp(2.5rem, 1.6rem + 3.4vw, 4.75rem) / 1 var(--font-display);
@@ -969,6 +968,7 @@ body.menu-open { overflow: hidden; }
 
 
 /* 13. OUR VALUES =========================================================== */
+.values { padding-bottom: 0; }                            /* the falling pills follow right after */
 .values-grid { display: grid; gap: var(--gap); }
 @media (min-width: 640px)  { .values-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1100px) { .values-grid { grid-template-columns: repeat(5, 1fr); } }
