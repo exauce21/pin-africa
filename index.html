@@ -433,7 +433,7 @@
        (wipe + zoom, scrubbed to the scroll — main.js). Below 960px each
        part shows its own photo inline.
        =================================================================== -->
-  <section class="campaign panel theme-ink" id="campaign" aria-labelledby="campaign-title" data-campaign>
+  <section class="campaign panel theme-teal" id="campaign" aria-labelledby="campaign-title" data-campaign>
     <div class="container campaign__grid">
       <div class="campaign__media" aria-hidden="true">
         <div class="campaign__frame">
@@ -594,7 +594,7 @@
             <button class="reel__btn reel__btn--prev" type="button" data-reel-prev>
               <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr-only">Previous story</span>
             </button>
-            <span class="reel__counter" aria-hidden="true"><span data-reel-current>01</span> / 03</span>
+            <span class="reel__counter" aria-hidden="true"><span data-reel-current>01</span> / 06</span>
             <button class="reel__btn reel__btn--next" type="button" data-reel-next>
               <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr-only">Next story</span>
             </button>
@@ -611,7 +611,7 @@
               <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
             </a>
             <div class="reel-card__top" aria-hidden="true">
-              <div class="reel-card__bars"><span class="is-on"></span><span></span><span></span></div>
+              <div class="reel-card__bars"><span class="is-on"></span><span></span><span></span><span></span></div>
               <span class="reel-card__index">01</span>
             </div>
             <div class="reel-card__overlay">
@@ -633,7 +633,7 @@
               <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
             </a>
             <div class="reel-card__top" aria-hidden="true">
-              <div class="reel-card__bars"><span class="is-on"></span><span class="is-on"></span><span></span></div>
+              <div class="reel-card__bars"><span class="is-on"></span><span class="is-on"></span><span></span><span></span></div>
               <span class="reel-card__index">02</span>
             </div>
             <div class="reel-card__overlay">
@@ -648,18 +648,19 @@
         </li>
 
         <li class="reel-card" data-reveal style="--i:2">
-          <!-- mlOPzMjiRG4 is a horizontal 16:9 video: shown inside the 9:16 card
-               over a blurred backdrop, and plays at 16:9 in the middle of the card. -->
+          <!-- mlOPzMjiRG4 is uploaded as 16:9 (vertical footage with blurred sides).
+               The card shows YouTube's vertical thumbnail (oar2, 720 × 1280) like
+               the others; once played, the 16:9 player sits in the middle of the
+               card over that same image, blurred. -->
           <div class="reel-card__frame">
             <a class="yt yt--landscape" id="yt-zainab" href="https://www.youtube.com/watch?v=mlOPzMjiRG4" target="_blank" rel="noopener"
                data-yt="mlOPzMjiRG4" data-yt-title="Body Positivity Through Artivism" tabindex="-1" aria-hidden="true">
-              <img class="yt__backdrop" src="https://i.ytimg.com/vi/mlOPzMjiRG4/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
-              <img class="yt__front" src="https://i.ytimg.com/vi/mlOPzMjiRG4/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
+              <img class="yt__backdrop" src="https://i.ytimg.com/vi/mlOPzMjiRG4/oar2.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
               <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
             </a>
             <div class="reel-card__top" aria-hidden="true">
-              <div class="reel-card__bars"><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span></div>
-              <span class="reel-card__index">03</span>
+              <div class="reel-card__bars"><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span></div>
+              <span class="reel-card__index">04</span>
             </div>
             <div class="reel-card__overlay">
               <h3 class="reel-card__title">Body Positivity Through Artivism</h3>
@@ -672,11 +673,74 @@
             </div>
           </div>
         </li>
-      </ul>
 
-      <div class="container">
-        <div class="reel__progress" aria-hidden="true"><span></span></div>
-      </div>
+        <li class="reel-card" data-reveal style="--i:1">
+          <div class="reel-card__frame">
+            <a class="yt" id="yt-chess" href="https://www.youtube.com/shorts/H5_WO84c6yk" target="_blank" rel="noopener"
+               data-yt="H5_WO84c6yk" data-yt-title="The Chess Kings and Queens of Oshodi" tabindex="-1" aria-hidden="true">
+              <img src="https://i.ytimg.com/vi/H5_WO84c6yk/oar2.jpg" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+              <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
+            </a>
+            <div class="reel-card__top" aria-hidden="true">
+              <div class="reel-card__bars"><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span></span></div>
+              <span class="reel-card__index">03</span>
+            </div>
+            <div class="reel-card__overlay">
+              <h3 class="reel-card__title">The Ocean is the Limit: Surviving Illegal Migration</h3>
+              <a class="cta" href="https://www.youtube.com/shorts/H5_WO84c6yk" target="_blank" rel="noopener" data-yt-play="yt-chess">
+                <span class="cta__label">Watch the story</span>
+                <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+                <span class="sr-only">: The Ocean is the Limit: Surviving Illegal Migration</span>
+              </a>
+            </div>
+          </div>
+        </li>
+
+        <li class="reel-card" data-reveal style="--i:1">
+          <div class="reel-card__frame">
+            <a class="yt" id="yt-chess" href="https://www.youtube.com/shorts/jCsC2kn2AWs" target="_blank" rel="noopener"
+               data-yt="jCsC2kn2AWs" data-yt-title="The Chess Kings and Queens of Oshodi" tabindex="-1" aria-hidden="true">
+              <img src="https://i.ytimg.com/vi/jCsC2kn2AWs/oar2.jpg" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+              <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
+            </a>
+            <div class="reel-card__top" aria-hidden="true">
+              <div class="reel-card__bars"><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span></span></div>
+              <span class="reel-card__index">03</span>
+            </div>
+            <div class="reel-card__overlay">
+              <h3 class="reel-card__title">CEO Jose House of Fashions on Sustainable Fashion</h3>
+              <p class="reel-card__desc">Featuring Josephine Nakafeero</p>
+              <a class="cta" href="https://www.youtube.com/shorts/jCsC2kn2AWs" target="_blank" rel="noopener" data-yt-play="yt-chess">
+                <span class="cta__label">Watch the story</span>
+                <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+                <span class="sr-only">: Josephine Nakafeero - CEO Jose House of Fashions on Sustainable Fashion</span>
+              </a>
+            </div>
+          </div>
+        </li>
+
+        <li class="reel-card" data-reveal style="--i:1">
+          <div class="reel-card__frame">
+            <a class="yt" id="yt-chess" href="https://www.youtube.com/shorts/KIX-KrwyosA" target="_blank" rel="noopener"
+               data-yt="KIX-KrwyosA" data-yt-title="The Chess Kings and Queens of Oshodi" tabindex="-1" aria-hidden="true">
+              <img src="https://i.ytimg.com/vi/KIX-KrwyosA/oar2.jpg" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+              <span class="yt__play"><svg class="icon icon--fill"><use href="#i-play"/></svg></span>
+            </a>
+            <div class="reel-card__top" aria-hidden="true">
+              <div class="reel-card__bars"><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span></span></div>
+              <span class="reel-card__index">03</span>
+            </div>
+            <div class="reel-card__overlay">
+              <h3 class="reel-card__title">The Chess Kings and Queens of Oshodi</h3>
+              <a class="cta" href="https://www.youtube.com/shorts/KIX-KrwyosA" target="_blank" rel="noopener" data-yt-play="yt-chess">
+                <span class="cta__label">Watch the story</span>
+                <span class="cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+                <span class="sr-only">: The Chess Kings and Queens of Oshodi</span>
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </section>
 

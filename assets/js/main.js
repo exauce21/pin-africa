@@ -478,7 +478,7 @@
 
     var updateCampaign = function () {
       cTick = false;
-      if (!cMedia.offsetParent || cParts.length < 2) return;
+      if (!cMedia || !cFrame || !cMedia.offsetParent || cParts.length < 2) return;
       var vh = window.innerHeight;
       var top = cParts[1].getBoundingClientRect().top;
       var t = Math.max(0, Math.min(1, (vh * 0.85 - top) / (vh * 0.45)));
@@ -488,8 +488,9 @@
       var index = t >= 0.5 ? 1 : 0;
       if (index === cIndex) return;
       cIndex = index;
-      cCurrent.textContent = String(index + 1).padStart(2, '0');
-      cCaption.textContent = cParts[index].getAttribute('data-caption');
+      // Counter, caption and step buttons are optional in the markup
+      if (cCurrent) cCurrent.textContent = String(index + 1).padStart(2, '0');
+      if (cCaption) cCaption.textContent = cParts[index].getAttribute('data-caption');
       each(cSteps, function (btn, i) { btn.classList.toggle('is-active', i === index); });
     };
 
@@ -509,13 +510,13 @@
     updateCampaign();
 
     var cFine = window.matchMedia('(hover: hover) and (pointer: fine)');
-    cFrame.addEventListener('pointermove', function (e) {
+    if (cFrame) cFrame.addEventListener('pointermove', function (e) {
       if (!cFine.matches || reduceMotion.matches) return;
       var r = cFrame.getBoundingClientRect();
       cFrame.style.setProperty('--px', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
       cFrame.style.setProperty('--py', ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
     });
-    cFrame.addEventListener('pointerleave', function () {
+    if (cFrame) cFrame.addEventListener('pointerleave', function () {
       cFrame.style.removeProperty('--px');
       cFrame.style.removeProperty('--py');
     });
@@ -527,6 +528,23 @@
   // Works without JS (opens YouTube). With JS the thumbnail is swapped for a
   // privacy-enhanced youtube-nocookie.com player; starting a video puts any
   // other playing video back to its thumbnail.
+  // Thumbnails: not every size exists for every video (Shorts often lack
+  // oardefault). YouTube then serves a 120×90 grey placeholder (or fails):
+  // step down to the next size until a real image loads.
+  var YT_SIZES = ['oardefault', 'oar2', 'maxresdefault', 'hq720', 'sddefault', 'hqdefault'];
+  var checkThumb = function (img) {
+    if (img.naturalWidth > 120) return;
+    var m = img.src.match(/\/vi\/([^/]+)\/([a-z0-9]+)\.jpg/);
+    var i = m ? YT_SIZES.indexOf(m[2]) : -1;
+    if (i < 0 || i === YT_SIZES.length - 1) return;
+    img.src = 'https://i.ytimg.com/vi/' + m[1] + '/' + YT_SIZES[i + 1] + '.jpg';
+  };
+  each(document.querySelectorAll('.yt img'), function (img) {
+    img.addEventListener('load', function () { checkThumb(img); });
+    img.addEventListener('error', function () { checkThumb(img); });
+    if (img.complete) checkThumb(img);
+  });
+
   var players = [];   // { player, facade }
 
   function stopOtherVideos() {
@@ -608,23 +626,24 @@
       var max = track.scrollWidth - track.clientWidth;
       var isStatic = max <= 2;
       reel.classList.toggle('is-static', isStatic);
-      prevBtn.disabled = isStatic || track.scrollLeft <= 2;
-      nextBtn.disabled = isStatic || track.scrollLeft >= max - 2;
+      if (prevBtn) prevBtn.disabled = isStatic || track.scrollLeft <= 2;
+      if (nextBtn) nextBtn.disabled = isStatic || track.scrollLeft >= max - 2;
 
       var index = Math.round(track.scrollLeft / stepSize());
       if (!isStatic && track.scrollLeft >= max - 2) index = cards.length - 1;
       index = Math.max(0, Math.min(cards.length - 1, index));
-      current.textContent = String(index + 1).padStart(2, '0');
+      if (current) current.textContent = String(index + 1).padStart(2, '0');
 
+      // Counter and progress bar are optional in the markup
       var p = isStatic ? 100 : ((track.scrollLeft + track.clientWidth) / track.scrollWidth) * 100;
-      progress.style.setProperty('--p', p.toFixed(1) + '%');
+      if (progress) progress.style.setProperty('--p', p.toFixed(1) + '%');
     };
 
     var go = function (dir) {
       track.scrollBy({ left: dir * stepSize(), behavior: reduceMotion.matches ? 'auto' : 'smooth' });
     };
-    prevBtn.addEventListener('click', function () { go(-1); });
-    nextBtn.addEventListener('click', function () { go(1); });
+    if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
 
     var reelTick = false;
     track.addEventListener('scroll', function () {
