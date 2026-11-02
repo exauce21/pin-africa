@@ -477,7 +477,7 @@ a {
   width: var(--round-btn);
   height: var(--round-btn);
   border-radius: 50%;
-  background: var(--teal-20);
+  background: var(--white);
   color: var(--ink);
   text-decoration: none;
 }
@@ -1473,7 +1473,7 @@ body.menu-open {
   gap: 0.45em;
   padding: 0.42em 0.95em 0.42em 0.42em;
   border-radius: var(--r-pill);
-  font: 700 clamp(1.25rem, 0.85rem + 1.5vw, 2.25rem) / 1 var(--font-display); /* ≥ 20px bold */
+  font: 400 clamp(1.15rem, 0.85rem + 1.5vw, 2.25rem) / 1 var(--font-display); /* ≥ 20px bold */
   letter-spacing: -0.01em;
   white-space: nowrap;
   rotate: var(--r, 0deg);
@@ -1649,7 +1649,7 @@ body.menu-open {
 }
 .value-card__num {
   align-self: flex-start;
-  padding: 4px 12px;
+  padding: 12px 12px;
   border-radius: var(--r-pill);
   background: var(--white);
   color: var(--ink);
@@ -1678,6 +1678,10 @@ body.menu-open {
 }
 .value-card--ink {
   background: var(--ink);
+  color: var(--white);
+}
+.value-card--teal {
+  background: var(--teal);
   color: var(--white);
 }
 .value-card--blush {
