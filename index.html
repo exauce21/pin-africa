@@ -862,21 +862,70 @@
         </ul>
       </div>
 
-      <!-- Live News Update — thin horizontal card.
-           [PLACEHOLDER] live-news-01…06.jpg (decorative collage: alt="") -->
+      <!-- Live News Update — teal card: title + text, live feed illustration -->
       <article class="card live-card" data-reveal aria-labelledby="live-title">
         <div>
-          <h3 class="label" id="live-title">Live News Update</h3>
+          <h3 class="live-card__title" id="live-title">Live News Update</h3>
           <p>Our Live News Update feature was a dedicated live news page, updated daily by Pin Africa’s interns and news editor. The live update tool brought news updates together in one place and gave interns practical experience contributing to our daily news coverage.</p>
         </div>
-        <ul class="collage" role="list" aria-hidden="true">
-          <li><img src="assets/img/live-news-01.jpg" alt="" width="600" height="600" loading="lazy" decoding="async"></li>
-          <li><img src="assets/img/live-news-02.jpg" alt="" width="600" height="600" loading="lazy" decoding="async"></li>
-          <li><img src="assets/img/live-news-03.jpg" alt="" width="600" height="600" loading="lazy" decoding="async"></li>
-          <li><img src="assets/img/live-news-04.jpg" alt="" width="600" height="600" loading="lazy" decoding="async"></li>
-          <li><img src="assets/img/live-news-05.jpg" alt="" width="600" height="600" loading="lazy" decoding="async"></li>
-          <li><img src="assets/img/live-news-06.jpg" alt="" width="600" height="600" loading="lazy" decoding="async"></li>
-        </ul>
+        <svg class="live-illo" viewBox="0 0 400 300" aria-hidden="true" focusable="false">
+          <circle class="live-illo__halo" cx="200" cy="150" r="138"/>
+
+          <g class="live-illo__screen">
+            <rect class="live-illo__panel" x="70" y="34" width="260" height="232" rx="22"/>
+            <rect class="live-illo__bar" x="70" y="34" width="260" height="48" rx="22"/>
+            <rect class="live-illo__bar" x="70" y="60" width="260" height="22"/>
+            <g class="live-illo__badge">
+              <rect x="88" y="46" width="64" height="24" rx="12"/>
+              <circle class="live-illo__pulse" cx="103" cy="58" r="4"/>
+              <circle class="live-illo__dot" cx="103" cy="58" r="4"/>
+              <text x="113" y="62.5">LIVE</text>
+            </g>
+            <rect class="live-illo__line live-illo__line--bar" x="236" y="54" width="76" height="8" rx="4"/>
+
+            <line class="live-illo__rail" x1="104" y1="102" x2="104" y2="246"/>
+
+            <g class="live-illo__item live-illo__item--new">
+              <circle class="live-illo__node live-illo__node--new" cx="104" cy="110" r="7"/>
+              <rect class="live-illo__time live-illo__time--new" x="122" y="100" width="44" height="18" rx="9"/>
+              <text class="live-illo__time-text" x="144" y="113">14:05</text>
+              <rect class="live-illo__line" x="174" y="104" width="134" height="9" rx="4.5"/>
+              <rect class="live-illo__line live-illo__line--soft" x="122" y="126" width="168" height="8" rx="4"/>
+            </g>
+            <g class="live-illo__item">
+              <circle class="live-illo__node" cx="104" cy="164" r="6"/>
+              <rect class="live-illo__time" x="122" y="155" width="44" height="18" rx="9"/>
+              <text class="live-illo__time-text" x="144" y="168">11:30</text>
+              <rect class="live-illo__line" x="174" y="159" width="110" height="9" rx="4.5"/>
+              <rect class="live-illo__line live-illo__line--soft" x="122" y="181" width="150" height="8" rx="4"/>
+            </g>
+            <g class="live-illo__item">
+              <circle class="live-illo__node" cx="104" cy="218" r="6"/>
+              <rect class="live-illo__time" x="122" y="209" width="44" height="18" rx="9"/>
+              <text class="live-illo__time-text" x="144" y="222">09:00</text>
+              <rect class="live-illo__line" x="174" y="213" width="122" height="9" rx="4.5"/>
+              <rect class="live-illo__line live-illo__line--soft" x="122" y="235" width="96" height="8" rx="4"/>
+            </g>
+          </g>
+
+          <!-- New update bubble -->
+          <g class="live-illo__float live-illo__float--a">
+            <rect class="live-illo__bubble" x="276" y="14" width="104" height="40" rx="20"/>
+            <circle class="live-illo__bubble-dot" cx="298" cy="34" r="9"/>
+            <path class="live-illo__bubble-icon" d="M294.5 34.2l2.6 2.6 5-5.2"/>
+            <rect class="live-illo__line" x="314" y="27" width="50" height="6" rx="3"/>
+            <rect class="live-illo__line live-illo__line--soft" x="314" y="37" width="34" height="6" rx="3"/>
+          </g>
+
+          <!-- The interns and news editor -->
+          <g class="live-illo__float live-illo__float--b">
+            <rect class="live-illo__bubble" x="22" y="226" width="118" height="46" rx="23"/>
+            <circle class="live-illo__avatar live-illo__avatar--teal" cx="48" cy="249" r="13"/>
+            <circle class="live-illo__avatar live-illo__avatar--red" cx="70" cy="249" r="13"/>
+            <circle class="live-illo__avatar live-illo__avatar--ink" cx="92" cy="249" r="13"/>
+            <text class="live-illo__plus" x="118" y="254">+4</text>
+          </g>
+        </svg>
       </article>
     </div>
   </section>
@@ -931,20 +980,9 @@
 
 
   <!-- ===================================================================
-       13. CONTACT & ARCHIVE — two rounded 50/50 panels just before the footer
+       13. ARCHIVE & CONTACT — two compact rounded panels just before the footer
        =================================================================== -->
   <section class="prefooter" aria-label="Contact and archive">
-    <div class="prefooter__block theme-red" id="contact">
-      <h2>Contact</h2>
-      <p>For enquiries about Pin Africa’s archive, previous work or permissions, please contact:</p>
-      <div class="prefooter__actions">
-        <a class="pill-cta" href="mailto:info@pin-africa.com">
-          <span class="pill-cta__label pill-cta__label--email">info@pin-africa.com</span>
-          <span class="pill-cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
-        </a>
-      </div>
-    </div>
-
     <div class="prefooter__block theme-mist">
       <h2>About this archive</h2>
       <p>This page brings together selected examples of Pin Africa’s previous work. It is a curated record rather than a complete copy of the original website. Some older pages, images or videos may no longer be available.</p>
@@ -956,30 +994,50 @@
         </a>
       </div>
     </div>
+    <div class="prefooter__block theme-red" id="contact">
+      <h2>Contact</h2>
+      <p>For enquiries about Pin Africa’s archive, previous work or permissions, please contact:</p>
+      <div class="prefooter__actions">
+        <a class="pill-cta" href="mailto:info@pin-africa.com">
+          <span class="pill-cta__label pill-cta__label--email">info@pin-africa.com</span>
+          <span class="pill-cta__icon" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+        </a>
+      </div>
+    </div>
+
   </section>
 
 </main>
 
 
 <!-- =====================================================================
-     14. FOOTER — ink panel: logo, big tagline, social icons, links, contact
+     14. FOOTER — ink panel, two rows: logo, slogan and menu on top;
+     copyright, social icons and back-to-top along the bottom.
      Social icons: self-hosted subset of Font Awesome Free (assets/css/fa-brands.css)
      ===================================================================== -->
 <footer class="site-footer" id="social">
   <div class="footer__inner">
-    <div class="footer__head">
-      <img class="footer__logo" src="assets/img/logo-pin-africa-white-compact.svg" alt="Pin Africa" width="220" height="83" loading="lazy">
-      <a class="to-top" href="#top">
-        <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
-        <span class="sr-only">Back to top</span>
-      </a>
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img class="footer__logo" src="assets/img/logo-pin-africa-white-compact.svg" alt="Pin Africa" width="220" height="83" loading="lazy">
+        <p class="footer__slogan">Stories That Shape <span>Africa</span></p>
+        <nav class="footer__col footer__links" aria-label="Footer">
+          <ul role="list">
+            <li><a href="#about">About</a></li>
+            <li><a href="#work">Selected Work</a></li>
+            <li><a href="#video">Video</a></li>
+            <li><a href="#mobile">Mobile</a></li>
+            <li><a href="#interactive">Interactive</a></li>
+            <li><a href="#articles">Articles</a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
 
-    <p class="footer__tagline" aria-hidden="true">Stories That Shape <span>Africa</span></p>
-
-    <div class="footer__grid">
-      <div class="footer__col">
-        <h3>Find us on social media</h3>
+    <div class="footer__bottom">
+      <p>Copyright © Pin Africa 2026</p>
+      <div class="footer__col footer__contact">
+        <p class="footer__social-title">Find us on social media</p>
         <ul class="social" role="list">
           <li><a href="https://www.linkedin.com/company/pin-africa/" target="_blank" rel="noopener"><i class="fab fa-linkedin-in" aria-hidden="true"></i><span class="sr-only">Pin Africa on LinkedIn (opens in a new tab)</span></a></li>
           <li><a href="https://www.instagram.com/pin_africa/" target="_blank" rel="noopener"><i class="fab fa-instagram" aria-hidden="true"></i><span class="sr-only">Pin Africa on Instagram (opens in a new tab)</span></a></li>
@@ -990,27 +1048,10 @@
           <li><a href="https://www.youtube.com/@pinafrica3470" target="_blank" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i><span class="sr-only">Pin Africa on YouTube (opens in a new tab)</span></a></li>
         </ul>
       </div>
-
-      <nav class="footer__col footer__links" aria-label="Footer">
-        <ul role="list">
-          <li><a href="#about">About</a></li>
-          <li><a href="#work">Selected Work</a></li>
-          <li><a href="#video">Video</a></li>
-          <li><a href="#mobile">Mobile</a></li>
-          <li><a href="#interactive">Interactive</a></li>
-          <li><a href="#articles">Articles</a></li>
-        </ul>
-      </nav>
-
-      <div class="footer__col">
-        <h3>Contact</h3>
-        <a class="footer__email" href="mailto:info@pin-africa.com">info@pin-africa.com</a>
-      </div>
-    </div>
-
-    <div class="footer__bottom">
-      <!-- No years of activity shown until confirmed -->
-      <p>© Pin Africa</p>
+      <a class="to-top" href="#top">
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+        <span class="sr-only">Back to top</span>
+      </a>
     </div>
   </div>
 </footer>
